@@ -11,12 +11,12 @@ body {
   width: 1024px;
   height: 576px;
   margin: 0 auto;
-  background-image: url('https://i.imgur.com/gIhNJmY.jpeg'); /* 背景圖片 URL */
-  background-size: cover; /* 背景圖片覆蓋整個區域 */
-  background-position: center; /* 背景圖片居中 */
+  background-image: url('https://i.imgur.com/gIhNJmY.jpeg');
+  background-size: cover;
+  background-position: center;
   border: 3px solid white;
-  overflow: hidden; /* 避免遊戲元素超出容器範圍 */
-  z-index: 1; /* 確保背景不會被其他元素遮擋 */
+  overflow: hidden;
+  z-index: 0;  /* 確保背景圖層不會被其他層覆蓋 */
 }
 
 #video-overlay {
@@ -29,7 +29,7 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* 確保影片覆蓋層位於最上層 */
+  z-index: 9999;
 }
 
 iframe {
@@ -42,6 +42,7 @@ iframe {
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
+  z-index: 1;  /* 確保玩家位於背景之上 */
 }
 
 #enemy {
@@ -49,6 +50,7 @@ iframe {
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
+  z-index: 2;  /* 確保敵人位於背景之上 */
 }
 
 #scoreboard {
