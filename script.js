@@ -54,7 +54,7 @@ function movePlayer() {
 // 生成敵人
 function spawnEnemy() {
   const enemyObj = {
-    pos: getRandomPosition(),  // 隨機生成敵人位置並檢查是否與其他敵人重疊
+    pos: getRandomPosition(),  // 隨機生成敵人位置
     speed: 2,  // 敵人初速度設定為2
     element: document.createElement('div')
   };
@@ -75,7 +75,7 @@ function spawnEnemy() {
   enemies.push(enemyObj);  // 添加到敵人陣列
 
   // 開始移動敵人
-  setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
+  setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次敵人位置
 }
 
 // 隨機生成敵人位置並檢查是否與其他敵人重疊
@@ -113,7 +113,7 @@ function moveEnemy(enemyObj) {
   let dx = playerPos.x - enemyObj.pos.x;
   let dy = playerPos.y - enemyObj.pos.y;
   let dist = Math.sqrt(dx * dx + dy * dy);
-  let speed = enemyObj.speed;  // 每個敵人的移動速度
+  let speed = enemyObj.speed;  // 敵人移動速度
 
   if (dist > speed) {
     enemyObj.pos.x += (dx / dist) * speed;
@@ -122,37 +122,7 @@ function moveEnemy(enemyObj) {
     enemyObj.element.style.top = enemyObj.pos.y + 'px';
   }
 
-  // 檢查敵人間的碰撞
-  avoidEnemyCollision(enemyObj);
-
   checkCollision(enemyObj); // 檢查是否碰撞
-}
-
-// 檢查敵人之間的碰撞並避開
-function avoidEnemyCollision(enemyObj) {
-  const minDist = 60; // 設定敵人之間的最小距離
-
-  enemies.forEach(otherEnemy => {
-    if (enemyObj === otherEnemy) return; // 跳過自己
-
-    let dx = enemyObj.pos.x - otherEnemy.pos.x;
-    let dy = enemyObj.pos.y - otherEnemy.pos.y;
-    let dist = Math.sqrt(dx * dx + dy * dy);
-
-    // 如果兩個敵人太近，就避開
-    if (dist < minDist) {
-      // 計算避免重疊的方向
-      let angle = Math.atan2(dy, dx);
-      let offsetX = Math.cos(angle) * (minDist - dist);
-      let offsetY = Math.sin(angle) * (minDist - dist);
-
-      // 調整敵人的位置
-      enemyObj.pos.x += offsetX;
-      enemyObj.pos.y += offsetY;
-      enemyObj.element.style.left = enemyObj.pos.x + 'px';
-      enemyObj.element.style.top = enemyObj.pos.y + 'px';
-    }
-  });
 }
 
 // 檢查碰撞
