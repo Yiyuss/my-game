@@ -3,38 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game</title>
+  <title>遊戲</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- 遊戲容器 -->
   <div id="game-container">
-    <!-- 玩家 -->
-    <div id="player"></div>
-    
-    <!-- 敵人們會被動態生成 -->
+    <button id="start-btn">開始遊戲</button>
+    <div id="player"></div> <!-- 玩家 -->
+    <div id="score">分數: 0</div>
+    <div id="time">時間: 0</div>
+
+    <!-- 影片遮罩 -->
+    <div id="video-overlay">
+      <iframe id="end-video" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
   </div>
 
-  <!-- 顯示影片的覆蓋層 -->
-  <div id="video-overlay">
-    <iframe id="end-video" width="800" height="450" frameborder="0" allow="autoplay; encrypted-media"></iframe>
-  </div>
-
-  <!-- 開始遊戲按鈕 -->
-  <button id="start-btn">Start Game</button>
-
-  <!-- 分數顯示 -->
-  <div id="score">Score: 0</div>
-
-  <!-- 時間顯示 -->
-  <div id="time">Time: 0</div>
-
-  <!-- 播放碰撞聲音 -->
-  <audio id="hit-sound" src="hit-sound.mp3"></audio>
-
-  <!-- 引入JavaScript -->
   <script src="script.js"></script>
-
 </body>
 </html>
