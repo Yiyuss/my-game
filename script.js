@@ -63,7 +63,9 @@ function spawnEnemy() {
   enemyObj.element.style.position = 'absolute';
   enemyObj.element.style.width = '50px';
   enemyObj.element.style.height = '50px';
-  enemyObj.element.style.backgroundColor = 'blue';  // 敵人顯示為藍色
+  enemyObj.element.style.backgroundImage = 'url("https://i.imgur.com/NPnmEtr.png")';
+  enemyObj.element.style.backgroundSize = 'cover';
+  enemyObj.element.style.backgroundRepeat = 'no-repeat';
   document.getElementById('game-container').appendChild(enemyObj.element);
 
   // 設置敵人的位置
@@ -118,6 +120,56 @@ function moveEnemy(enemyObj) {
     enemyObj.pos.y += (dy / dist) * speed;
     enemyObj.element.style.left = enemyObj.pos.x + 'px';
     enemyObj.element.style.top = enemyObj.pos.y + 'px';
+  }
+
+  // 檢查敵人間的碰撞
+  avoidEnemyCollision(enemyObj);
+
+  checkCollision(enemyObj); // 檢查是否碰撞
+}
+
+// 檢查敵人之間的碰撞並避開
+function avoidEnemyCollision(enemyObj) {
+  const minDist = 60; // 設定敵人之間的最小距離
+
+  enemies.forEach(otherEnemy => {
+    if (enemyObj === otherEnemy) return; // 跳過自己
+
+    let dx = enemyObj.pos.x - otherEnemy.pos.x;
+    let dy = enemyObj.pos.y - otherEnemy.pos.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+
+    // 如果兩個敵人太近，就避開
+    if (dist < minDist) {
+      // 計算避免重疊的方向
+      let angle = Math.atan2(dy, dx);
+      let offsetX = Math.cos(angle) * (minDist - dist);
+      let offsetY = Math.sin(angle) * (minDist - dist);
+
+      // 調整敵人的位置
+      enemyObj.pos.x += offsetX;
+      enemyObj.pos.y += offsetY;
+      enemyObj.element.style.left = enemyObj.pos.x + 'px';
+      enemyObj.element.style.top = enemyObj.pos.y + 'px';
+    }
+  });
+}
+
+// 檢查碰撞
+function checkCollision(enemyObj) {
+  if (!gameRunning || isVideoPlaying()) return; // 影片播放中不處理碰撞檢查
+
+  let playerRect = player.getBoundingClientRect();
+  let enemyRect = enemyObj.element.getBoundingClientRect();
+
+  if (
+    playerRect.right > enemyRect.left &&
+    playerRect.left < enemyRect.right &&
+    playerRect.bottom > enemyRect.top &&
+    playerRect.top < enemyRect.bottom
+  ) {
+    hitSound.play();
+    showVideo(); // 播放影片
   }
 }
 
