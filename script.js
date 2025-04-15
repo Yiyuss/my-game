@@ -121,6 +121,7 @@ function updateGame() {
 
 // 顯示影片
 function showVideo() {
+  console.log("Show video triggered");  // 確認是否進入該函數
   endVideo.src = 'https://www.youtube.com/embed/Qybud8_paik?autoplay=1';
   videoOverlay.style.display = 'flex';
   gameRunning = false; // 暫停遊戲
@@ -165,6 +166,7 @@ function checkCollisions() {
     const enemyRect = enemy.element.getBoundingClientRect();
     const playerRect = player.getBoundingClientRect();
 
+    // 碰撞檢測
     if (
       enemyRect.left < playerRect.right &&
       enemyRect.right > playerRect.left &&
