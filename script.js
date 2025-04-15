@@ -17,7 +17,6 @@ let targetPos = { x: playerPos.x, y: playerPos.y };
 
 // 開始遊戲
 startBtn.addEventListener('click', () => {
-  console.log('Game started');  // 確認點擊事件是否觸發
   resetGame(); // 重置遊戲狀態
   gameRunning = true;
 
@@ -55,7 +54,7 @@ function movePlayer() {
 // 生成敵人
 function spawnEnemy() {
   const enemyObj = {
-    pos: getRandomPosition(),  // 隨機生成敵人位置並檢查是否與其他敵人重疊
+    pos: getRandomPosition(),  // 隨機生成敵人位置
     speed: 2,  // 敵人初速度設定為2
     element: document.createElement('div')
   };
@@ -76,7 +75,7 @@ function spawnEnemy() {
   enemies.push(enemyObj);  // 添加到敵人陣列
 
   // 開始移動敵人
-  enemyObj.interval = setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
+  setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
 }
 
 // 隨機生成敵人位置並檢查是否與其他敵人重疊
@@ -191,24 +190,6 @@ function moveEnemy(enemy) {
     // 正常移動
     enemy.pos.x += (dx / dist) * speed;
     enemy.pos.y += (dy / dist) * speed;
-
-    // 排斥邏輯：確保敵人不會重疊
-    enemies.forEach(otherEnemy => {
-      if (enemy !== otherEnemy) {
-        let distToOtherEnemy = Math.sqrt(
-          Math.pow(enemy.pos.x - otherEnemy.pos.x, 2) + Math.pow(enemy.pos.y - otherEnemy.pos.y, 2)
-        );
-        const minDist = 60; // 最小距離
-
-        if (distToOtherEnemy < minDist) {
-          // 兩敵人太近，調整它們的距離
-          let repulsionForce = minDist - distToOtherEnemy;
-          let angle = Math.atan2(enemy.pos.y - otherEnemy.pos.y, enemy.pos.x - otherEnemy.pos.x);
-          enemy.pos.x += Math.cos(angle) * repulsionForce;
-          enemy.pos.y += Math.sin(angle) * repulsionForce;
-        }
-      }
-    });
 
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
