@@ -66,16 +66,13 @@ function spawnEnemy() {
   enemyObj.element.style.backgroundImage = 'url("https://i.imgur.com/NPnmEtr.png")';
   enemyObj.element.style.backgroundSize = 'cover';
   enemyObj.element.style.backgroundRepeat = 'no-repeat';
+  document.getElementById('game-container').appendChild(enemyObj.element);
 
   // 設置敵人的位置
   enemyObj.element.style.left = enemyObj.pos.x + 'px';
   enemyObj.element.style.top = enemyObj.pos.y + 'px';
 
-  // 將敵人加入遊戲畫面
-  document.getElementById('game-container').appendChild(enemyObj.element);
-
-  // 添加到敵人陣列中
-  enemies.push(enemyObj);
+  enemies.push(enemyObj);  // 添加到敵人陣列
 
   // 開始移動敵人
   setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
@@ -83,19 +80,15 @@ function spawnEnemy() {
 
 // 隨機生成敵人位置並檢查是否與其他敵人重疊
 function getRandomPosition() {
-  const gameContainer = document.getElementById('game-container');
-  const gameContainerRect = gameContainer.getBoundingClientRect();
-  
   const minDist = 60; // 最小距離，避免敵人太靠近
   let newPos;
   let overlap = true;
 
   while (overlap) {
     overlap = false;
-    // 隨機生成敵人位置，確保敵人位於遊戲容器範圍內
     newPos = {
-      x: Math.random() * (gameContainerRect.width - 50), // 減去敵人寬度
-      y: Math.random() * (gameContainerRect.height - 50) // 減去敵人高度
+      x: Math.random() * (window.innerWidth - 50),
+      y: Math.random() * (window.innerHeight - 50)
     };
 
     // 檢查新位置是否與現有敵人重疊
@@ -113,7 +106,7 @@ function getRandomPosition() {
   return newPos;
 }
 
-// 敵人移動邏輯
+// 敵人移動
 function moveEnemy(enemyObj) {
   if (!gameRunning || isVideoPlaying()) return; // 影片播放中不處理敵人移動
 
@@ -129,7 +122,7 @@ function moveEnemy(enemyObj) {
     enemyObj.element.style.top = enemyObj.pos.y + 'px';
   }
 
-  // 檢查敵人之間的碰撞
+  // 檢查敵人間的碰撞
   avoidEnemyCollision(enemyObj);
 
   checkCollision(enemyObj); // 檢查是否碰撞
