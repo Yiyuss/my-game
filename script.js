@@ -76,7 +76,7 @@ function spawnEnemy() {
   enemies.push(enemyObj);  // 添加到敵人陣列
 
   // 開始移動敵人
-  setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
+  enemyObj.interval = setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
 }
 
 // 隨機生成敵人位置並檢查是否與其他敵人重疊
