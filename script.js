@@ -63,9 +63,7 @@ function spawnEnemy() {
   enemyObj.element.style.position = 'absolute';
   enemyObj.element.style.width = '50px';
   enemyObj.element.style.height = '50px';
-  enemyObj.element.style.backgroundImage = 'url("https://i.imgur.com/NPnmEtr.png")';
-  enemyObj.element.style.backgroundSize = 'cover';
-  enemyObj.element.style.backgroundRepeat = 'no-repeat';
+  enemyObj.element.style.backgroundColor = 'blue';  // 敵人顯示為藍色
   document.getElementById('game-container').appendChild(enemyObj.element);
 
   // 設置敵人的位置
@@ -120,24 +118,6 @@ function moveEnemy(enemyObj) {
     enemyObj.pos.y += (dy / dist) * speed;
     enemyObj.element.style.left = enemyObj.pos.x + 'px';
     enemyObj.element.style.top = enemyObj.pos.y + 'px';
-  }
-}
-
-// 檢查碰撞
-function checkCollision(enemyObj) {
-  if (!gameRunning || isVideoPlaying()) return; // 影片播放中不處理碰撞檢查
-
-  let playerRect = player.getBoundingClientRect();
-  let enemyRect = enemyObj.element.getBoundingClientRect();
-
-  if (
-    playerRect.right > enemyRect.left &&
-    playerRect.left < enemyRect.right &&
-    playerRect.bottom > enemyRect.top &&
-    playerRect.top < enemyRect.bottom
-  ) {
-    hitSound.play();
-    showVideo(); // 播放影片
   }
 }
 
