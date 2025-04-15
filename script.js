@@ -117,30 +117,6 @@ function updateGame() {
   scoreEl.textContent = score;
 
   movePlayer();  // 讓玩家移動
-
-  // 檢查是否碰到敵人
-  checkCollisions();
-}
-
-// 檢查玩家是否碰到敵人
-function checkCollisions() {
-  for (let i = 0; i < enemies.length; i++) {
-    let enemy = enemies[i];
-    let playerRect = player.getBoundingClientRect();
-    let enemyRect = enemy.element.getBoundingClientRect();
-
-    if (playerRect.left < enemyRect.right &&
-        playerRect.right > enemyRect.left &&
-        playerRect.top < enemyRect.bottom &&
-        playerRect.bottom > enemyRect.top) {
-      // 播放碰撞聲音
-      hitSound.play();
-      
-      // 顯示影片
-      showVideo();
-      break;  // 一旦碰撞，跳出循環
-    }
-  }
 }
 
 // 顯示影片
@@ -173,19 +149,33 @@ function resetGame() {
   player.style.left = playerPos.x + 'px';
   player.style.top = playerPos.y + 'px';
 
-  // 清除所有敵人
-  enemies.forEach(enemyObj => enemyObj.element.remove());
-  enemies = []; // 清空敵人陣列
-
-  // 重新生成敵人並啟動敵人移動
-  spawnEnemy();
-
-  // 重啟遊戲定時器
-  gameRunning = true;
-  gameInterval = setInterval(updateGame, 1000 / 60); // 更新遊戲狀態
+  // 移除所有敵人
+  enemies.forEach(enemy => enemy.element.remove());
+  enemies = [];
 }
 
 // 檢查影片是否正在播放
 function isVideoPlaying() {
   return videoOverlay.style.display === 'flex';
 }
+
+// 偵測碰撞
+function checkCollisions() {
+  enemies.forEach(enemy => {
+    const enemyRect = enemy.element.getBoundingClientRect();
+    const playerRect = player.getBoundingClientRect();
+
+    if (
+      enemyRect.left < playerRect.right &&
+      enemyRect.right > playerRect.left &&
+      enemyRect.top < playerRect.bottom &&
+      enemyRect.bottom > playerRect.top
+    ) {
+      hitSound.play();  // 播放碰撞音效
+      showVideo();  // 顯示影片
+    }
+  });
+}
+
+// 每幾秒檢查碰撞
+setInterval(checkCollisions, 100);
