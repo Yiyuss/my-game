@@ -117,11 +117,11 @@ function updateGame() {
   scoreEl.textContent = score;
 
   movePlayer();  // 讓玩家移動
+  checkCollisions(); // 檢查碰撞
 }
 
 // 顯示影片
 function showVideo() {
-  console.log("Show video triggered");  // 確認是否進入該函數
   endVideo.src = 'https://www.youtube.com/embed/Qybud8_paik?autoplay=1';
   videoOverlay.style.display = 'flex';
   gameRunning = false; // 暫停遊戲
@@ -179,9 +179,6 @@ function checkCollisions() {
   });
 }
 
-// 每幾秒檢查碰撞
-setInterval(checkCollisions, 100);
-
 // 移動敵人
 function moveEnemy(enemy) {
   // 計算敵人移動方向（朝向玩家移動）
@@ -191,8 +188,28 @@ function moveEnemy(enemy) {
   let speed = enemy.speed;
 
   if (dist > speed) {
+    // 正常移動
     enemy.pos.x += (dx / dist) * speed;
     enemy.pos.y += (dy / dist) * speed;
+
+    // 排斥邏輯：確保敵人不會重疊
+    enemies.forEach(otherEnemy => {
+      if (enemy !== otherEnemy) {
+        let distToOtherEnemy = Math.sqrt(
+          Math.pow(enemy.pos.x - otherEnemy.pos.x, 2) + Math.pow(enemy.pos.y - otherEnemy.pos.y, 2)
+        );
+        const minDist = 60; // 最小距離
+
+        if (distToOtherEnemy < minDist) {
+          // 兩敵人太近，調整它們的距離
+          let repulsionForce = minDist - distToOtherEnemy;
+          let angle = Math.atan2(enemy.pos.y - otherEnemy.pos.y, enemy.pos.x - otherEnemy.pos.x);
+          enemy.pos.x += Math.cos(angle) * repulsionForce;
+          enemy.pos.y += Math.sin(angle) * repulsionForce;
+        }
+      }
+    });
+
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
   }
