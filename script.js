@@ -181,3 +181,19 @@ function checkCollisions() {
 
 // 每幾秒檢查碰撞
 setInterval(checkCollisions, 100);
+
+// 移動敵人
+function moveEnemy(enemy) {
+  // 計算敵人移動方向（朝向玩家移動）
+  let dx = playerPos.x - enemy.pos.x;
+  let dy = playerPos.y - enemy.pos.y;
+  let dist = Math.sqrt(dx * dx + dy * dy);
+  let speed = enemy.speed;
+
+  if (dist > speed) {
+    enemy.pos.x += (dx / dist) * speed;
+    enemy.pos.y += (dy / dist) * speed;
+    enemy.element.style.left = enemy.pos.x + 'px';
+    enemy.element.style.top = enemy.pos.y + 'px';
+  }
+}
