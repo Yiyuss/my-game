@@ -61,8 +61,8 @@ function createEnemy() {
     do {
         overlap = false;
         newEnemy = {
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
+            x: Math.random() * (canvas.width - 50), // 避免超出畫布
+            y: Math.random() * (canvas.height - 50), // 避免超出畫布
             width: 50, // 假設敵人寬度為50
             height: 50, // 假設敵人高度為50
             speed: 2
@@ -158,6 +158,7 @@ function startGame() {
     gameOver = false;
     score = 0;
     enemies = [];  // 清空敵人
+    document.getElementById('startButton').style.display = 'none'; // 隱藏開始遊戲按鈕
     update(); // 開始更新遊戲
 }
 
@@ -170,6 +171,3 @@ function gameOverFunc() {
 // 監聽開始遊戲的按鈕
 document.getElementById('startButton').addEventListener('click', startGame);
 document.getElementById('gameOverButton').addEventListener('click', gameOverFunc);
-
-// 初始呼叫開始遊戲
-startGame();
