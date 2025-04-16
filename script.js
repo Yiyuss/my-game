@@ -3,57 +3,31 @@ const ctx = canvas.getContext("2d");
 const startButton = document.getElementById("start-button");
 const video = document.getElementById("game-video");
 
-let player = {
-  x: 100,
-  y: 100,
-  width: 50,
-  height: 50,
-  image: new Image()
-};
-player.image.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/01.png";
+let playerImage = new Image();
+playerImage.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/01.png";
 
-let enemies = [];
 let enemyImage = new Image();
 enemyImage.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png";
 
-let isGameRunning = false;
+let player = { x: 100, y: 100, width: 50, height: 50 };
+let enemies = [];
 let keys = {};
+let isGameRunning = false;
+let targetPos = null; // for mouse move
 
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
-document.addEventListener("keydown", (e) => {
-  keys[e.key] = true;
-});
-
-document.addEventListener("keyup", (e) => {
-  keys[e.key] = false;
-});
+document.addEventListener("keydown", e => { keys[e.key] = true; });
+document.addEventListener("keyup", e => { keys[e.key] = false; });
 
 canvas.addEventListener("click", (e) => {
   const rect = canvas.getBoundingClientRect();
-  const targetX = e.clientX - rect.left - player.width / 2;
-  const targetY = e.clientY - rect.top - player.height / 2;
-  player.x = targetX;
-  player.y = targetY;
-});
-
-function spawnEnemy() {
-  let enemy = {
-    x: Math.random() * (canvasWidth - 50),
-    y: Math.random() * (canvasHeight - 50),
-    width: 50,
-    height: 50,
-    speed: 1 + Math.random() * 1.5
+  targetPos = {
+    x: e.clientX - rect.left - player.width / 2,
+    y: e.clientY - rect.top - player.height / 2
   };
-
-  // 避免初始重疊
-  for (let e of enemies) {
-    if (isColliding(enemy, e)) return;
-  }
-
-  enemies.push(enemy);
-}
+});
 
 function movePlayer() {
   const speed = 4;
@@ -62,75 +36,92 @@ function movePlayer() {
   if (keys["ArrowLeft"] || keys["a"]) player.x -= speed;
   if (keys["ArrowRight"] || keys["d"]) player.x += speed;
 
-  // 邊界限制
+  if (targetPos) {
+    const dx = targetPos.x - player.x;
+    const dy = targetPos.y - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 1) {
+      player.x += dx / dist * speed;
+      player.y += dy / dist * speed;
+    } else {
+      targetPos = null;
+    }
+  }
+
   player.x = Math.max(0, Math.min(player.x, canvasWidth - player.width));
   player.y = Math.max(0, Math.min(player.y, canvasHeight - player.height));
 }
 
+function spawnEnemy() {
+  const e = {
+    x: Math.random() * (canvasWidth - 50),
+    y: Math.random() * (canvasHeight - 50),
+    width: 50,
+    height: 50,
+    speed: 1 + Math.random()
+  };
+  for (let other of enemies) {
+    if (isColliding(e, other)) return; // skip if overlap
+  }
+  enemies.push(e);
+}
+
 function moveEnemies() {
-  for (let enemy of enemies) {
-    const dx = player.x - enemy.x;
-    const dy = player.y - enemy.y;
+  for (let e of enemies) {
+    const dx = player.x - e.x;
+    const dy = player.y - e.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 0) {
-      enemy.x += (dx / dist) * enemy.speed;
-      enemy.y += (dy / dist) * enemy.speed;
+      e.x += dx / dist * e.speed;
+      e.y += dy / dist * e.speed;
     }
   }
 }
 
-function preventEnemyOverlap() {
+function preventOverlap() {
   for (let i = 0; i < enemies.length; i++) {
     for (let j = i + 1; j < enemies.length; j++) {
-      const e1 = enemies[i];
-      const e2 = enemies[j];
-      if (isColliding(e1, e2)) {
-        const dx = e2.x - e1.x;
-        const dy = e2.y - e1.y;
+      const a = enemies[i];
+      const b = enemies[j];
+      if (isColliding(a, b)) {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const overlap = 0.5;
-
-        e1.x -= (dx / dist) * overlap;
-        e1.y -= (dy / dist) * overlap;
-        e2.x += (dx / dist) * overlap;
-        e2.y += (dy / dist) * overlap;
+        const move = 0.5;
+        a.x -= (dx / dist) * move;
+        a.y -= (dy / dist) * move;
+        b.x += (dx / dist) * move;
+        b.y += (dy / dist) * move;
       }
     }
   }
 }
 
 function isColliding(a, b) {
-  return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
-  );
+  return a.x < b.x + b.width &&
+         a.x + a.width > b.x &&
+         a.y < b.y + b.height &&
+         a.y + a.height > b.y;
 }
 
-function drawPlayer() {
-  ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
-}
-
-function drawEnemies() {
-  for (let enemy of enemies) {
-    ctx.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
+function draw() {
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+  for (let e of enemies) {
+    ctx.drawImage(enemyImage, e.x, e.y, e.width, e.height);
   }
 }
 
 function gameLoop() {
   if (!isGameRunning) return;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   movePlayer();
   moveEnemies();
-  preventEnemyOverlap();
-  drawPlayer();
-  drawEnemies();
+  preventOverlap();
+  draw();
 
-  for (let enemy of enemies) {
-    if (isColliding(player, enemy)) {
+  for (let e of enemies) {
+    if (isColliding(player, e)) {
       handleCollision();
       return;
     }
@@ -149,31 +140,24 @@ function handleCollision() {
 
 video.onended = () => {
   video.style.display = "none";
-  startGame();
+  restartGame();
 };
 
-function startGame() {
+function restartGame() {
   player.x = 100;
   player.y = 100;
   enemies = [];
+  for (let i = 0; i < 5; i++) spawnEnemy();
   isGameRunning = true;
-
-  for (let i = 0; i < 5; i++) {
-    spawnEnemy();
-  }
-
   setInterval(() => {
-    if (isGameRunning && enemies.length < 50) {
-      spawnEnemy();
-    }
+    if (isGameRunning && enemies.length < 50) spawnEnemy();
   }, 2000);
-
   gameLoop();
 }
 
 startButton.onclick = () => {
   startButton.style.display = "none";
-  startGame();
+  restartGame();
 };
 
 window.onload = () => {
