@@ -7,10 +7,6 @@ const cutscene = document.getElementById("cutscene");
 const startBtn = document.getElementById("start-btn");
 
 let score = 0;
-let timer = 0;
-let gameInterval;
-let spawnInterval;
-let timerInterval;
 let enemies = [];
 let isGameRunning = false;
 let speed = 2;
@@ -24,25 +20,26 @@ document.addEventListener("keyup", e => keys[e.key] = false);
 
 function resetGame() {
   score = 0;
-  timer = 0;
-  speed = 2;
   enemies = [];
   enemiesContainer.innerHTML = "";
   player.style.top = "50%";
   player.style.left = "50%";
   scoreDisplay.textContent = score;
-  timerDisplay.textContent = timer;
+  timerDisplay.textContent = 0;  // 去除計時器
 }
 
 function movePlayer() {
   const step = 5;
+  const rect = player.getBoundingClientRect();
+  const containerRect = enemiesContainer.getBoundingClientRect();
+
   let top = player.offsetTop;
   let left = player.offsetLeft;
 
   if (keys["ArrowUp"] && top > 0) top -= step;
-  if (keys["ArrowDown"] && top + 50 < gameHeight) top += step;
+  if (keys["ArrowDown"] && top + player.offsetHeight < gameHeight) top += step;
   if (keys["ArrowLeft"] && left > 0) left -= step;
-  if (keys["ArrowRight"] && left + 50 < gameWidth) left += step;
+  if (keys["ArrowRight"] && left + player.offsetWidth < gameWidth) left += step;
 
   player.style.top = top + "px";
   player.style.left = left + "px";
@@ -52,18 +49,8 @@ function spawnEnemy() {
   const enemy = document.createElement("div");
   enemy.classList.add("enemy");
 
-  let x, y, tries = 0, overlap = true;
-
-  while (overlap && tries < 100) {
-    x = Math.random() * (gameWidth - 50);
-    y = Math.random() * (gameHeight - 50);
-    overlap = enemies.some(e => {
-      const dx = e.x - x;
-      const dy = e.y - y;
-      return Math.sqrt(dx * dx + dy * dy) < 50;
-    });
-    tries++;
-  }
+  let x = Math.random() * (gameWidth - 50);
+  let y = Math.random() * (gameHeight - 50);
 
   enemy.style.left = x + "px";
   enemy.style.top = y + "px";
@@ -71,31 +58,25 @@ function spawnEnemy() {
 
   enemies.push({
     el: enemy,
-    x, y,
-    dx: (Math.random() - 0.5) * speed,
-    dy: (Math.random() - 0.5) * speed
+    x,
+    y,
+    dx: 0,
+    dy: 0
   });
 }
 
 function moveEnemies() {
-  enemies.forEach((enemy, i) => {
+  enemies.forEach(enemy => {
+    const dx = player.offsetLeft - enemy.x;
+    const dy = player.offsetTop - enemy.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const direction = distance === 0 ? { x: 0, y: 0 } : { x: dx / distance, y: dy / distance };
+    
+    enemy.dx = direction.x * speed;
+    enemy.dy = direction.y * speed;
+
     enemy.x += enemy.dx;
     enemy.y += enemy.dy;
-
-    if (enemy.x < 0 || enemy.x > gameWidth - 50) enemy.dx *= -1;
-    if (enemy.y < 0 || enemy.y > gameHeight - 50) enemy.dy *= -1;
-
-    for (let j = 0; j < enemies.length; j++) {
-      if (i === j) continue;
-      const other = enemies[j];
-      const dx = enemy.x - other.x;
-      const dy = enemy.y - other.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 50) {
-        enemy.dx *= -1;
-        enemy.dy *= -1;
-      }
-    }
 
     enemy.el.style.left = enemy.x + "px";
     enemy.el.style.top = enemy.y + "px";
@@ -105,12 +86,12 @@ function moveEnemies() {
 function checkCollision() {
   const playerRect = player.getBoundingClientRect();
   for (let enemy of enemies) {
-    const rect = enemy.el.getBoundingClientRect();
+    const enemyRect = enemy.el.getBoundingClientRect();
     if (
-      playerRect.left < rect.right &&
-      playerRect.right > rect.left &&
-      playerRect.top < rect.bottom &&
-      playerRect.bottom > rect.top
+      playerRect.left < enemyRect.right &&
+      playerRect.right > enemyRect.left &&
+      playerRect.top < enemyRect.bottom &&
+      playerRect.bottom > enemyRect.top
     ) {
       endGame();
       return;
@@ -131,30 +112,22 @@ function startGame() {
 
   gameInterval = setInterval(updateGame, 20);
   spawnInterval = setInterval(spawnEnemy, 2000);
-  timerInterval = setInterval(() => {
-    timer++;
-    score++;
-    scoreDisplay.textContent = score;
-    timerDisplay.textContent = timer;
-    if (timer % 10 === 0) speed += 0.5;
-  }, 1000);
 }
 
 function endGame() {
   isGameRunning = false;
   clearInterval(gameInterval);
   clearInterval(spawnInterval);
-  clearInterval(timerInterval);
 
   videoOverlay.style.display = "flex";
   cutscene.currentTime = 0;
   cutscene.play();
 
   cutscene.onended = () => {
-    startGame();
+    startGame(); // 自動重新開始
   };
 }
 
 startBtn.addEventListener("click", () => {
-  startGame();
+  if (!isGameRunning) startGame();
 });
