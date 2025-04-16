@@ -214,6 +214,9 @@ function resetGame() {
   playerPos = { x: 200, y: 200 };
   player.style.left = playerPos.x + 'px';
   player.style.top = playerPos.y + 'px';
+
+  // 隱藏影片層
+  videoOverlay.style.display = 'none';
 }
 
 function isVideoPlaying() {
