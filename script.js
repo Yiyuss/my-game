@@ -16,9 +16,17 @@ let player = {
 // 敵人資料
 let enemies = [];
 
+// 設置背景和影片
+const backgroundImage = new Image();
+backgroundImage.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg';  // 背景圖片
+const gameVideo = document.createElement('video');
+gameVideo.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/001.mp4';  // 影片源
+gameVideo.loop = false;
+
 // 初始化計分與遊戲狀態
 let score = 0;
 let gameOver = false;
+let gameStarted = false;  // 用來防止遊戲狀態錯亂
 
 // 監聽鍵盤事件來控制玩家移動
 document.addEventListener('keydown', keyDownHandler);
@@ -109,6 +117,9 @@ function moveEnemies() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除畫布
 
+    // 畫背景
+    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
     // 畫玩家
     ctx.fillStyle = 'green';
     ctx.fillRect(player.x, player.y, player.width, player.height);
@@ -158,16 +169,28 @@ function startGame() {
     gameOver = false;
     score = 0;
     enemies = [];  // 清空敵人
+    gameStarted = true;
     document.getElementById('startButton').style.display = 'none'; // 隱藏開始遊戲按鈕
-    update(); // 開始更新遊戲
+
+    // 播放影片
+    gameVideo.play();
+    
+    // 在影片播放結束後重啟遊戲
+    gameVideo.onended = function() {
+        gameStarted = false;  // 遊戲結束
+        gameOverFunc(); // 結束遊戲並顯示遊戲結束畫面
+    };
+
+    // 更新遊戲畫面
+    update();
 }
 
 // 停止遊戲
 function gameOverFunc() {
     gameOver = true;
     alert("Game Over!");
+    document.getElementById('startButton').style.display = 'block'; // 顯示開始遊戲按鈕
 }
 
 // 監聽開始遊戲的按鈕
 document.getElementById('startButton').addEventListener('click', startGame);
-document.getElementById('gameOverButton').addEventListener('click', gameOverFunc);
