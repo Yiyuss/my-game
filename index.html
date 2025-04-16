@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <title>簡易小遊戲</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>遊戲</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="scoreboard">
-    分數：<span id="score">0</span> ｜ 時間：<span id="time">0</span>
+    <span id="score">分數：0</span> | <span id="time">時間：0</span>
   </div>
   <button id="start-btn">開始遊戲</button>
   <div id="game-container">
-    <div id="player"></div>
     <div id="video-overlay">
-      <iframe id="end-video" src="" frameborder="0" allow="autoplay"></iframe>
+      <video id="cutscene" muted>
+        <source src="https://raw.githubusercontent.com/Yiyuss/my-game/main/001.mp4" type="video/mp4">
+      </video>
     </div>
   </div>
-  <audio id="hit-sound" src="https://www.soundjay.com/mechanical/sounds/metal-clunk-1.mp3" preload="auto"></audio>
   <script src="script.js"></script>
 </body>
 </html>
