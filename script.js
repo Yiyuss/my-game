@@ -37,7 +37,6 @@ enemyImage.src = "敵人角色02.png";
 document.addEventListener("keydown", (e) => {
     keys[e.key] = true;
 });
-
 document.addEventListener("keyup", (e) => {
     keys[e.key] = false;
 });
@@ -47,10 +46,8 @@ startButton.addEventListener("click", () => {
     gameRunning = true;
     videoPlayed = false;
 
-    // 重設角色位置
     player.x = 100;
     player.y = 100;
-
     enemy.x = 400;
     enemy.y = 300;
 
@@ -60,7 +57,6 @@ startButton.addEventListener("click", () => {
     video.pause();
     video.currentTime = 0;
 
-    // 啟動計時器
     timerInterval = setInterval(updateTimer, 1000);
     requestAnimationFrame(updateGame);
 });
@@ -76,7 +72,6 @@ function movePlayer() {
     if (keys["ArrowLeft"]) player.x -= player.speed;
     if (keys["ArrowRight"]) player.x += player.speed;
 
-    // 邊界限制
     player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
     player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
 }
@@ -120,17 +115,14 @@ function updateGame() {
     drawPlayer();
     drawEnemy();
 
-    // 撞擊判斷
     if (isColliding(player, enemy) && !videoPlayed) {
         videoPlayed = true;
         gameRunning = false;
         clearInterval(timerInterval);
 
-        // 顯示影片
         video.style.display = "block";
         video.play();
 
-        // 顯示重新開始按鈕
         startButton.style.display = "block";
         startButton.textContent = "重新開始";
         return;
