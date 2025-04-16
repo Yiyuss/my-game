@@ -206,28 +206,16 @@ function resetGame() {
   // 重新初始化遊戲狀態
   score = 0;
   time = 0;
+  enemies = [];
   scoreEl.textContent = score;
   timeEl.textContent = time;
 
-  // 重新設定玩家位置
-  playerPos.x = 200;
-  playerPos.y = 200;
+  // 重新初始化玩家位置
+  playerPos = { x: 200, y: 200 };
   player.style.left = playerPos.x + 'px';
   player.style.top = playerPos.y + 'px';
-
-  // 清除所有敵人
-  enemies.forEach(enemyObj => enemyObj.element.remove());
-  enemies = []; // 清空敵人陣列
-
-  // 重新生成敵人並啟動敵人移動
-  spawnEnemy();
-
-  // 重啟遊戲定時器
-  gameRunning = true;
-  gameInterval = setInterval(updateGame, 1000 / 60); // 更新遊戲狀態
 }
 
-// 檢查影片是否正在播放
 function isVideoPlaying() {
   return videoOverlay.style.display === 'flex';
 }
