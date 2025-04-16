@@ -19,6 +19,7 @@ startButton.addEventListener("click", () => {
 });
 
 function movePlayer() {
+  if (!gameRunning) return;
   if (keys["ArrowUp"]) playerY -= speed;
   if (keys["ArrowDown"]) playerY += speed;
   if (keys["ArrowLeft"]) playerX -= speed;
@@ -92,17 +93,19 @@ function startGame() {
   playerY = 100;
   player.style.left = playerX + "px";
   player.style.top = playerY + "px";
+
   enemies.forEach(e => e.remove());
   enemies = [];
   for (let i = 0; i < 5; i++) createEnemy();
+
   requestAnimationFrame(gameLoop);
 }
 
 function playCutscene() {
   gameRunning = false;
   cutscene.currentTime = 0;
-  cutscene.style.display = "block";
   cutscene.muted = false;
+  cutscene.style.display = "block";
   cutscene.play();
   cutscene.onended = () => {
     cutscene.style.display = "none";
