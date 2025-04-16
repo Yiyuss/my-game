@@ -108,16 +108,11 @@ function getRandomPosition() {
 
 // 移動敵人，朝玩家移動
 function moveEnemy(enemy) {
-  const targetX = playerPos.x;
-  const targetY = playerPos.y;
+  const dx = playerPos.x - enemy.pos.x;
+  const dy = playerPos.y - enemy.pos.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const speed = enemy.speed;
 
-  // 計算敵人當前位置與目標的距離
-  let dx = targetX - enemy.pos.x;
-  let dy = targetY - enemy.pos.y;
-  let dist = Math.sqrt(dx * dx + dy * dy);
-  let speed = enemy.speed;
-
-  // 如果距離大於敵人移動的步長，則移動
   if (dist > speed) {
     enemy.pos.x += (dx / dist) * speed;
     enemy.pos.y += (dy / dist) * speed;
@@ -126,47 +121,34 @@ function moveEnemy(enemy) {
   }
 }
 
-// 檢查敵人是否與玩家碰撞
-function checkCollision(enemy) {
-  const enemyRect = enemy.element.getBoundingClientRect();
-  const playerRect = player.getBoundingClientRect();
-
-  if (
-    enemyRect.left < playerRect.right &&
-    enemyRect.right > playerRect.left &&
-    enemyRect.top < playerRect.bottom &&
-    enemyRect.bottom > playerRect.top
-  ) {
-    showVideo();
+// 更新遊戲狀態
+function updateGame() {
+  if (gameRunning) {
+    movePlayer();  // 控制玩家移動
+    checkCollisions();  // 檢查碰撞
   }
 }
 
-// 顯示影片
-function showVideo() {
-  endVideo.src = 'https://www.youtube.com/embed/Qybud8_paik?autoplay=1';
-  videoOverlay.style.display = 'flex';
-  gameRunning = false; // 暫停遊戲
+// 檢查玩家與敵人是否碰撞
+function checkCollisions() {
+  for (const enemy of enemies) {
+    const dx = playerPos.x - enemy.pos.x;
+    const dy = playerPos.y - enemy.pos.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-  // 影片播放 9 秒後關閉
-  setTimeout(() => {
-    videoOverlay.style.display = 'none';
-    resetGame();
-  }, 9000);
+    if (dist < 50) {
+      hitSound.play();
+      showGameOverVideo();  // 播放結束影片
+      gameRunning = false;
+      break;
+    }
+  }
 }
 
-// 更新遊戲狀態
-function updateGame() {
-  if (!gameRunning || isVideoPlaying()) return; // 如果影片正在播放，不進行更新
-
-  time++;
-  timeEl.textContent = '時間: ' + time;
-  score++;
-  scoreEl.textContent = '分數: ' + score;
-
-  movePlayer();  // 讓玩家移動
-
-  // 檢查敵人與玩家碰撞
-  enemies.forEach(enemy => checkCollision(enemy));
+// 顯示遊戲結束影片
+function showGameOverVideo() {
+  videoOverlay.style.display = 'flex';
+  endVideo.src = 'https://www.youtube.com/embed/your_video_id?autoplay=1';
 }
 
 // 檢查影片是否正在播放
@@ -176,21 +158,14 @@ function isVideoPlaying() {
 
 // 重置遊戲狀態
 function resetGame() {
-  clearInterval(gameInterval);
+  playerPos = { x: 200, y: 200 };
   score = 0;
   time = 0;
-  scoreEl.textContent = '分數: ' + score;
-  timeEl.textContent = '時間: ' + time;
-
-  playerPos.x = 200;
-  playerPos.y = 200;
-  player.style.left = playerPos.x + 'px';
-  player.style.top = playerPos.y + 'px';
-
-  enemies.forEach(enemyObj => enemyObj.element.remove());
   enemies = [];
+  gameRunning = false;
 
-  spawnEnemy();
-  gameRunning = true;
-  gameInterval = setInterval(updateGame, 1000 / 60);
+  scoreEl.textContent = `分數: ${score}`;
+  timeEl.textContent = `時間: ${time}`;
+  videoOverlay.style.display = 'none';
+  endVideo.src = '';
 }
