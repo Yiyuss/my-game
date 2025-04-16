@@ -10,8 +10,8 @@ body {
   position: relative;
   width: 1024px;
   height: 576px;
-  margin: 0 auto;
-  background-image: url('https://i.imgur.com/gIhNJmY.jpeg');
+  margin: 20px auto; /* 垂直居中 */
+  background-image: url('https://i.postimg.cc/k5VX4QCH/bg.jpg'); /* 替代 imgur 圖片 */
   background-size: cover;
   background-position: center;
   border: 3px solid white;
@@ -40,7 +40,7 @@ iframe {
   width: 50px;
   height: 50px;
   background-color: blue;
-  background-image: url('https://i.imgur.com/JFTxfva.png');
+  background-image: url('https://i.postimg.cc/Y9Kmy6cv/player.png'); /* 新玩家圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
@@ -50,7 +50,7 @@ iframe {
   width: 50px;
   height: 50px;
   background-color: red;
-  background-image: url('https://i.imgur.com/NPnmEtr.png');
+  background-image: url('https://i.postimg.cc/Nf4vLmn7/enemy.png'); /* 新敵人圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
