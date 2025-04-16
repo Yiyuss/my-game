@@ -9,39 +9,39 @@ const hitSound = document.getElementById('hit-sound');
 let score = 0;
 let time = 0;
 let playerPos = { x: 200, y: 200 };
-let enemies = [];  // 用來存儲所有敵人
+let enemies = [];  // 用来存储所有敌人
 let gameInterval;
 let enemyInterval;
 let gameRunning = false;
 let targetPos = { x: playerPos.x, y: playerPos.y };
 
-// 開始遊戲
+// 开始游戏
 startBtn.addEventListener('click', (e) => {
-  resetGame(); // 重置遊戲狀態
+  resetGame(); // 重置游戏状态
   gameRunning = true;
 
-  // 啟動遊戲邏輯
+  // 启动游戏逻辑
   gameInterval = setInterval(updateGame, 1000 / 60); // 每秒更新60次
-  spawnEnemy();  // 初始生成一個敵人
-  enemyInterval = setInterval(spawnEnemy, 5000); // 每 5 秒生成一個新的敵人
+  spawnEnemy();  // 初始生成一个敌人
+  enemyInterval = setInterval(spawnEnemy, 5000); // 每 5 秒生成一个新的敌人
 });
 
-// 點擊移動玩家
+// 点击移动玩家
 document.addEventListener('click', (e) => {
-  if (!gameRunning || isVideoPlaying()) return; // 影片播放中不處理移動
+  if (!gameRunning || isVideoPlaying()) return; // 影片播放中不处理移动
 
-  // 計算目標位置
+  // 计算目标位置
   const gameContainerRect = document.getElementById('game-container').getBoundingClientRect();
   targetPos.x = e.clientX - gameContainerRect.left - player.offsetWidth / 2;
   targetPos.y = e.clientY - gameContainerRect.top - player.offsetHeight / 2;
 });
 
-// 讓玩家朝目標移動
+// 让玩家朝目标移动
 function movePlayer() {
   let dx = targetPos.x - playerPos.x;
   let dy = targetPos.y - playerPos.y;
   let dist = Math.sqrt(dx * dx + dy * dy);
-  let speed = 4;  // 人物移動速度
+  let speed = 4;  // 人物移动速度
 
   if (dist > speed) {
     playerPos.x += (dx / dist) * speed;
@@ -51,15 +51,15 @@ function movePlayer() {
   }
 }
 
-// 生成敵人
+// 生成敌人
 function spawnEnemy() {
   const enemyObj = {
-    pos: getRandomPosition(),  // 隨機生成敵人位置
-    speed: 1.5,  // 敵人移動速度
+    pos: getRandomPosition(),  // 随机生成敌人位置
+    speed: 1.5,  // 敌人移动速度
     element: document.createElement('div')
   };
 
-  enemyObj.element.classList.add('enemy');  // 為敵人元素添加CSS類
+  enemyObj.element.classList.add('enemy');  // 为敌人元素添加CSS类
   enemyObj.element.style.position = 'absolute';
   enemyObj.element.style.width = '50px';
   enemyObj.element.style.height = '50px';
@@ -68,19 +68,19 @@ function spawnEnemy() {
   enemyObj.element.style.backgroundRepeat = 'no-repeat';
   document.getElementById('game-container').appendChild(enemyObj.element);
 
-  // 設置敵人的位置
+  // 设置敌人的位置
   enemyObj.element.style.left = enemyObj.pos.x + 'px';
   enemyObj.element.style.top = enemyObj.pos.y + 'px';
 
-  enemies.push(enemyObj);  // 添加到敵人陣列
+  enemies.push(enemyObj);  // 添加到敌人阵列
 
-  // 開始移動敵人
-  setInterval(() => moveEnemy(enemyObj), 1000 / 60); // 每幀更新敵人位置
+  // 开始移动敌人
+  setInterval(() => moveEnemy(enemyObj), 1000 / 60); // 每帧更新敌人位置
 }
 
-// 隨機生成敵人位置並檢查是否與其他敵人重疊
+// 随机生成敌人位置并检查是否与其他敌人重叠
 function getRandomPosition() {
-  const minDist = 60; // 最小距離，避免敵人太靠近
+  const minDist = 60; // 最小距离，避免敌人太靠近
   let newPos;
   let overlap = true;
 
@@ -91,7 +91,7 @@ function getRandomPosition() {
       y: Math.random() * (window.innerHeight - 50)
     };
 
-    // 檢查新位置是否與現有敵人重疊
+    // 检查新位置是否与现有敌人重叠
     for (let i = 0; i < enemies.length; i++) {
       let dist = Math.sqrt(
         Math.pow(newPos.x - enemies[i].pos.x, 2) + Math.pow(newPos.y - enemies[i].pos.y, 2)
@@ -106,7 +106,7 @@ function getRandomPosition() {
   return newPos;
 }
 
-// 移動敵人，朝玩家移動
+// 移动敌人，朝玩家移动
 function moveEnemy(enemy) {
   const dx = playerPos.x - enemy.pos.x;
   const dy = playerPos.y - enemy.pos.y;
@@ -121,15 +121,15 @@ function moveEnemy(enemy) {
   }
 }
 
-// 更新遊戲狀態
+// 更新游戏状态
 function updateGame() {
   if (gameRunning) {
-    movePlayer();  // 控制玩家移動
-    checkCollisions();  // 檢查碰撞
+    movePlayer();  // 控制玩家移动
+    checkCollisions();  // 检查碰撞
   }
 }
 
-// 檢查玩家與敵人是否碰撞
+// 检查玩家与敌人是否碰撞
 function checkCollisions() {
   for (const enemy of enemies) {
     const dx = playerPos.x - enemy.pos.x;
@@ -138,25 +138,25 @@ function checkCollisions() {
 
     if (dist < 50) {
       hitSound.play();
-      showGameOverVideo();  // 播放結束影片
+      showGameOverVideo();  // 播放结束影片
       gameRunning = false;
       break;
     }
   }
 }
 
-// 顯示遊戲結束影片
+// 显示游戏结束视频
 function showGameOverVideo() {
   videoOverlay.style.display = 'flex';
   endVideo.src = 'https://www.youtube.com/embed/your_video_id?autoplay=1';
 }
 
-// 檢查影片是否正在播放
+// 检查视频是否正在播放
 function isVideoPlaying() {
   return videoOverlay.style.display === 'flex';
 }
 
-// 重置遊戲狀態
+// 重置游戏状态
 function resetGame() {
   playerPos = { x: 200, y: 200 };
   score = 0;
@@ -164,8 +164,8 @@ function resetGame() {
   enemies = [];
   gameRunning = false;
 
-  scoreEl.textContent = `分數: ${score}`;
-  timeEl.textContent = `時間: ${time}`;
+  scoreEl.textContent = `分数: ${score}`;
+  timeEl.textContent = `时间: ${time}`;
   videoOverlay.style.display = 'none';
   endVideo.src = '';
 }
