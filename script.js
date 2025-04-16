@@ -55,8 +55,8 @@ function movePlayer() {
 // 生成敵人
 function spawnEnemy() {
   const enemyObj = {
-    pos: getRandomPosition(),  // 隨機生成敵人位置並檢查是否與其他敵人重疊
-    speed: 2,  // 敵人初速度設定為2
+    pos: getRandomPosition(),  // 隨機生成敵人位置
+    speed: 1.5,  // 敵人移動速度
     element: document.createElement('div')
   };
 
@@ -76,7 +76,7 @@ function spawnEnemy() {
   enemies.push(enemyObj);  // 添加到敵人陣列
 
   // 開始移動敵人
-  setInterval(() => moveEnemy(enemyObj), 30); // 每30ms更新一次
+  setInterval(() => moveEnemy(enemyObj), 1000 / 60); // 每幀更新敵人位置
 }
 
 // 隨機生成敵人位置並檢查是否與其他敵人重疊
@@ -107,12 +107,12 @@ function getRandomPosition() {
   return newPos;
 }
 
-// 移動敵人，根據玩家位置平滑移動
+// 移動敵人，朝玩家移動
 function moveEnemy(enemy) {
   // 目標位置是玩家的位置
   const targetX = playerPos.x;
   const targetY = playerPos.y;
-  
+
   // 計算敵人當前位置與目標的距離
   let dx = targetX - enemy.pos.x;
   let dy = targetY - enemy.pos.y;
@@ -128,7 +128,7 @@ function moveEnemy(enemy) {
     // 更新敵人位置
     enemy.pos.x += moveX;
     enemy.pos.y += moveY;
-    
+
     // 更新敵人元素的樣式
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
@@ -138,6 +138,25 @@ function moveEnemy(enemy) {
     enemy.pos.y = targetY;
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
+  }
+
+  // 檢查是否與玩家碰撞
+  checkCollision(enemy);
+}
+
+// 檢查敵人與玩家的碰撞
+function checkCollision(enemy) {
+  const enemyRect = enemy.element.getBoundingClientRect();
+  const playerRect = player.getBoundingClientRect();
+
+  if (
+    enemyRect.left < playerRect.right &&
+    enemyRect.right > playerRect.left &&
+    enemyRect.top < playerRect.bottom &&
+    enemyRect.bottom > playerRect.top
+  ) {
+    // 如果碰撞，顯示影片
+    showVideo();
   }
 }
 
