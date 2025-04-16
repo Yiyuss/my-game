@@ -17,7 +17,6 @@ let targetPos = { x: playerPos.x, y: playerPos.y };
 
 // 開始遊戲
 startBtn.addEventListener('click', () => {
-  console.log('Game started');
   resetGame(); // 重置遊戲狀態
   gameRunning = true;
 
