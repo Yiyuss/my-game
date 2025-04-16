@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>終極點擊生存戰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>追逐遊戲</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <button id="start-btn">開始遊戲</button>
-
-  <div id="scoreboard">
-    得分: <span id="score">0</span> |
-    時間: <span id="time">0</span> 秒
-  </div>
-
   <div id="game-container">
-    <!-- 影片覆蓋層 -->
-    <div id="video-overlay" style="display:none;">
-      <iframe id="end-video" width="100%" height="100%" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-    </div>
-
     <div id="player"></div>
     <div id="enemy"></div>
+    <button id="start-btn">開始遊戲</button>
+    <div id="score-board">分數: <span id="score">0</span></div>
+    <div id="time-board">倒數: <span id="time">30</span></div>
+    <div id="video-overlay">
+      <iframe
+        id="end-video"
+        width="560"
+        height="315"
+        src=""
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+      ></iframe>
+    </div>
   </div>
-
-  <audio id="hit-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
-
   <script src="script.js"></script>
 </body>
 </html>
