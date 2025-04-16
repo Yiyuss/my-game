@@ -1,117 +1,114 @@
-const player = document.getElementById("player");
-const enemy = document.getElementById("enemy");
-const startBtn = document.getElementById("start-btn");
-const scoreDisplay = document.getElementById("score");
-const timeDisplay = document.getElementById("time");
-const videoOverlay = document.getElementById("video-overlay");
-const endVideo = document.getElementById("end-video");
+const startBtn = document.getElementById('start-btn');
+const player = document.getElementById('player');
+const enemy = document.getElementById('enemy');
+const scoreBoard = document.getElementById('score-board');
+const timeBoard = document.getElementById('time-board');
+const videoOverlay = document.getElementById('video-overlay');
+const endVideo = document.getElementById('end-video');
 
-let playerX = 100;
-let playerY = 100;
-let enemyX = 400;
-let enemyY = 300;
-let score = 0;
-let timeLeft = 30;
 let gameRunning = false;
-let gameLoopInterval;
-let countdownInterval;
+let score = 0;
+let time = 0;
+let playerSpeed = 10;
+let enemySpeed = 5;
+let gameInterval;
+let timeInterval;
 
-function updatePositions() {
-  player.style.left = playerX + "px";
-  player.style.top = playerY + "px";
-  enemy.style.left = enemyX + "px";
-  enemy.style.top = enemyY + "px";
-}
+function startGame() {
+  score = 0;
+  time = 0;
+  updateScore();
+  updateTime();
+  resetPositions();
+  gameRunning = true;
 
-function moveEnemy() {
-  const dx = playerX - enemyX;
-  const dy = playerY - enemyY;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-
-  if (distance > 0) {
-    enemyX += (dx / distance) * 2;
-    enemyY += (dy / distance) * 2;
-  }
-}
-
-function checkCollision() {
-  const playerRect = player.getBoundingClientRect();
-  const enemyRect = enemy.getBoundingClientRect();
-
-  return !(
-    playerRect.right < enemyRect.left ||
-    playerRect.left > enemyRect.right ||
-    playerRect.bottom < enemyRect.top ||
-    playerRect.top > enemyRect.bottom
-  );
-}
-
-function gameLoop() {
-  if (!gameRunning) return;
-
-  moveEnemy();
-  updatePositions();
-
-  if (checkCollision()) {
-    clearInterval(gameLoopInterval);
-    clearInterval(countdownInterval);
-    showVideo();
-  }
-}
-
-function countdown() {
-  if (timeLeft > 0) {
-    timeLeft--;
-    timeDisplay.textContent = timeLeft;
-  } else {
-    clearInterval(gameLoopInterval);
-    clearInterval(countdownInterval);
-    showVideo();
-  }
-}
-
-function showVideo() {
-  endVideo.src = "https://www.youtube.com/embed/Qybud8_paik?autoplay=1&rel=0";
-  videoOverlay.style.display = "flex";
-  gameRunning = false;
-
-  setTimeout(() => {
-    videoOverlay.style.display = "none";
-    endVideo.src = "";
-    resetGame();
-  }, 9000);
+  gameInterval = setInterval(updateGame, 50);
+  timeInterval = setInterval(() => {
+    time++;
+    updateTime();
+  }, 1000);
 }
 
 function resetGame() {
-  playerX = 100;
-  playerY = 100;
-  enemyX = 400;
-  enemyY = 300;
+  clearInterval(gameInterval);
+  clearInterval(timeInterval);
+  gameRunning = false;
   score = 0;
-  timeLeft = 30;
-  scoreDisplay.textContent = score;
-  timeDisplay.textContent = timeLeft;
-  updatePositions();
+  time = 0;
+  updateScore();
+  updateTime();
+  resetPositions();
 }
 
-document.addEventListener("keydown", (event) => {
+function updateGame() {
   if (!gameRunning) return;
 
-  const step = 10;
+  let enemyTop = parseInt(enemy.style.top);
+  enemyTop += enemySpeed;
+  enemy.style.top = enemyTop + 'px';
 
-  if (event.key === "ArrowUp" && playerY - step >= 0) playerY -= step;
-  if (event.key === "ArrowDown" && playerY + step <= 526) playerY += step;
-  if (event.key === "ArrowLeft" && playerX - step >= 0) playerX -= step;
-  if (event.key === "ArrowRight" && playerX + step <= 974) playerX += step;
+  if (enemyTop > 576) {
+    score++;
+    updateScore();
+    resetEnemy();
+  }
 
-  score++;
-  scoreDisplay.textContent = score;
-  updatePositions();
+  if (isColliding(player, enemy)) {
+    showVideo();
+  }
+}
+
+function updateScore() {
+  scoreBoard.innerText = '分數: ' + score;
+}
+
+function updateTime() {
+  timeBoard.innerText = '時間: ' + time;
+}
+
+function resetPositions() {
+  player.style.left = '487px';
+  player.style.top = '500px';
+  resetEnemy();
+}
+
+function resetEnemy() {
+  enemy.style.left = Math.floor(Math.random() * (1024 - 50)) + 'px';
+  enemy.style.top = '-50px';
+}
+
+function isColliding(a, b) {
+  const aRect = a.getBoundingClientRect();
+  const bRect = b.getBoundingClientRect();
+  return !(
+    aRect.top > bRect.bottom ||
+    aRect.bottom < bRect.top ||
+    aRect.right < bRect.left ||
+    aRect.left > bRect.right
+  );
+}
+
+function showVideo() {
+  endVideo.src = 'https://www.youtube.com/embed/Qybud8_paik?autoplay=1&mute=1';
+  videoOverlay.style.display = 'flex';
+  gameRunning = false;
+
+  setTimeout(() => {
+    videoOverlay.style.display = 'none';
+    resetGame();
+    endVideo.src = '';
+  }, 9000);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!gameRunning) return;
+
+  let left = parseInt(player.style.left);
+  if (e.key === 'ArrowLeft' && left > 0) {
+    player.style.left = left - playerSpeed + 'px';
+  } else if (e.key === 'ArrowRight' && left < 1024 - 50) {
+    player.style.left = left + playerSpeed + 'px';
+  }
 });
 
-startBtn.addEventListener("click", () => {
-  resetGame();
-  gameRunning = true;
-  gameLoopInterval = setInterval(gameLoop, 30);
-  countdownInterval = setInterval(countdown, 1000);
-});
+startBtn.addEventListener('click', startGame);
