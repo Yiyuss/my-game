@@ -11,32 +11,24 @@ let player = { x: 400, y: 300, size: 50, speed: 5 };
 let enemies = [];
 let keys = {};
 let gameRunning = false;
-let enemySpawnInterval;
 let collisionDetected = false;
 
 function spawnEnemy() {
-  let x = Math.random() * (canvas.width - 50);
-  let y = Math.random() * (canvas.height - 50);
-  let dx = 0;
-  let dy = 0;
-
   let tries = 0;
   while (tries < 100) {
-    let overlap = enemies.some(e =>
-      Math.abs(e.x - x) < 50 && Math.abs(e.y - y) < 50
-    );
-    if (!overlap) break;
-    x = Math.random() * (canvas.width - 50);
-    y = Math.random() * (canvas.height - 50);
+    let x = Math.random() * (canvas.width - 50);
+    let y = Math.random() * (canvas.height - 50);
+    let overlap = enemies.some(e => Math.abs(e.x - x) < 50 && Math.abs(e.y - y) < 50);
+    if (!overlap) {
+      enemies.push({ x, y, size: 50 });
+      break;
+    }
     tries++;
   }
-
-  enemies.push({ x, y, size: 50, dx, dy });
 }
 
 function resetGame() {
-  player.x = 400;
-  player.y = 300;
+  player = { x: 400, y: 300, size: 50, speed: 5 };
   enemies = [];
   collisionDetected = false;
   for (let i = 0; i < 3; i++) spawnEnemy();
@@ -59,13 +51,17 @@ video.onended = () => {
 function update() {
   if (!gameRunning) return;
 
-  // 控制玩家
+  // 玩家控制
   if (keys["ArrowUp"]) player.y -= player.speed;
   if (keys["ArrowDown"]) player.y += player.speed;
   if (keys["ArrowLeft"]) player.x -= player.speed;
   if (keys["ArrowRight"]) player.x += player.speed;
 
-  // 碰撞偵測
+  // 邊界限制
+  player.x = Math.max(0, Math.min(canvas.width - player.size, player.x));
+  player.y = Math.max(0, Math.min(canvas.height - player.size, player.y));
+
+  // 敵人碰撞玩家
   for (let e of enemies) {
     if (
       player.x < e.x + e.size &&
@@ -82,21 +78,32 @@ function update() {
     return;
   }
 
-  // 移動敵人（追蹤玩家）
+  // 敵人追蹤玩家
   for (let e of enemies) {
     let dx = player.x - e.x;
     let dy = player.y - e.y;
     let dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 1) {
-      e.x += (dx / dist) * 1.5;
-      e.y += (dy / dist) * 1.5;
+      let moveX = (dx / dist) * 1.5;
+      let moveY = (dy / dist) * 1.5;
+
+      let nextX = e.x + moveX;
+      let nextY = e.y + moveY;
+
+      let overlap = enemies.some(other =>
+        other !== e &&
+        Math.abs(other.x - nextX) < 50 &&
+        Math.abs(other.y - nextY) < 50
+      );
+
+      if (!overlap) {
+        e.x = nextX;
+        e.y = nextY;
+      }
     }
   }
 
-  // 新增敵人（最多 20 個）
-  if (enemies.length < 20 && Math.random() < 0.01) {
-    spawnEnemy();
-  }
+  if (enemies.length < 20 && Math.random() < 0.01) spawnEnemy();
 }
 
 function draw() {
@@ -119,8 +126,8 @@ startBtn.addEventListener("click", () => {
   startBtn.style.display = "none";
 });
 
-window.addEventListener("keydown", e => (keys[e.key] = true));
-window.addEventListener("keyup", e => (keys[e.key] = false));
+window.addEventListener("keydown", e => keys[e.key] = true);
+window.addEventListener("keyup", e => keys[e.key] = false);
 
 window.onload = () => {
   resetGame();
