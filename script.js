@@ -186,6 +186,7 @@ function moveEnemy(enemy) {
   let dist = Math.sqrt(dx * dx + dy * dy);
   let speed = enemy.speed;
 
+  // 只要距離大於移動速度，就進行移動
   if (dist > speed) {
     // 正常移動
     enemy.pos.x += (dx / dist) * speed;
