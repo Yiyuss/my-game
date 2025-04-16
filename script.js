@@ -17,6 +17,7 @@ let targetPos = { x: playerPos.x, y: playerPos.y };
 
 // 開始遊戲
 startBtn.addEventListener('click', () => {
+  console.log('Game started');  // 確認點擊事件是否觸發
   resetGame(); // 重置遊戲狀態
   gameRunning = true;
 
@@ -54,11 +55,9 @@ function movePlayer() {
 // 生成敵人
 function spawnEnemy() {
   const enemyObj = {
-    pos: getRandomPosition(),  // 隨機生成敵人位置
+    pos: getRandomPosition(),  // 隨機生成敵人位置並檢查是否與其他敵人重疊
     speed: 2,  // 敵人初速度設定為2
-    element: document.createElement('div'),
-    dx: 0, // 敵人移動的X方向速度
-    dy: 0  // 敵人移動的Y方向速度
+    element: document.createElement('div')
   };
 
   enemyObj.element.classList.add('enemy');  // 為敵人元素添加CSS類
@@ -108,6 +107,40 @@ function getRandomPosition() {
   return newPos;
 }
 
+// 移動敵人，確保不會重疊
+function moveEnemy(enemy) {
+  // 目標位置是玩家的位置
+  const targetX = playerPos.x;
+  const targetY = playerPos.y;
+  
+  // 計算敵人當前位置與目標的距離
+  let dx = targetX - enemy.pos.x;
+  let dy = targetY - enemy.pos.y;
+  let dist = Math.sqrt(dx * dx + dy * dy);
+  let speed = enemy.speed;
+
+  // 如果距離大於敵人移動速度，繼續移動
+  if (dist > speed) {
+    // 計算每次更新的移動距離
+    let moveX = (dx / dist) * speed;
+    let moveY = (dy / dist) * speed;
+
+    // 更新敵人位置
+    enemy.pos.x += moveX;
+    enemy.pos.y += moveY;
+    
+    // 更新敵人元素的樣式
+    enemy.element.style.left = enemy.pos.x + 'px';
+    enemy.element.style.top = enemy.pos.y + 'px';
+  } else {
+    // 如果敵人接近玩家，停下來
+    enemy.pos.x = targetX;
+    enemy.pos.y = targetY;
+    enemy.element.style.left = enemy.pos.x + 'px';
+    enemy.element.style.top = enemy.pos.y + 'px';
+  }
+}
+
 // 更新遊戲狀態
 function updateGame() {
   if (!gameRunning || isVideoPlaying()) return; // 如果影片正在播放，不進行更新
@@ -118,7 +151,6 @@ function updateGame() {
   scoreEl.textContent = score;
 
   movePlayer();  // 讓玩家移動
-  checkCollisions(); // 檢查碰撞
 }
 
 // 顯示影片
@@ -151,60 +183,19 @@ function resetGame() {
   player.style.left = playerPos.x + 'px';
   player.style.top = playerPos.y + 'px';
 
-  // 移除所有敵人
-  enemies.forEach(enemy => enemy.element.remove());
-  enemies = [];
+  // 清除所有敵人
+  enemies.forEach(enemyObj => enemyObj.element.remove());
+  enemies = []; // 清空敵人陣列
+
+  // 重新生成敵人並啟動敵人移動
+  spawnEnemy();
+
+  // 重啟遊戲定時器
+  gameRunning = true;
+  gameInterval = setInterval(updateGame, 1000 / 60); // 更新遊戲狀態
 }
 
 // 檢查影片是否正在播放
 function isVideoPlaying() {
   return videoOverlay.style.display === 'flex';
-}
-
-// 偵測碰撞
-function checkCollisions() {
-  enemies.forEach(enemy => {
-    const enemyRect = enemy.element.getBoundingClientRect();
-    const playerRect = player.getBoundingClientRect();
-
-    // 碰撞檢測
-    if (
-      enemyRect.left < playerRect.right &&
-      enemyRect.right > playerRect.left &&
-      enemyRect.top < playerRect.bottom &&
-      enemyRect.bottom > playerRect.top
-    ) {
-      hitSound.play();  // 播放碰撞音效
-      showVideo();  // 顯示影片
-    }
-  });
-}
-
-// 移動敵人
-function moveEnemy(enemy) {
-  // 計算敵人移動方向（朝向玩家移動）
-  let dx = playerPos.x - enemy.pos.x;
-  let dy = playerPos.y - enemy.pos.y;
-  let dist = Math.sqrt(dx * dx + dy * dy);
-  let speed = enemy.speed;
-
-  // 正常移動
-  if (dist > speed) {
-    // 更新敵人的移動速度
-    enemy.dx = (dx / dist) * speed;
-    enemy.dy = (dy / dist) * speed;
-
-    // 更新敵人位置
-    enemy.pos.x += enemy.dx;
-    enemy.pos.y += enemy.dy;
-
-    enemy.element.style.left = enemy.pos.x + 'px';
-    enemy.element.style.top = enemy.pos.y + 'px';
-  } else {
-    // 如果敵人已經接近玩家，停止移動
-    enemy.pos.x = playerPos.x;
-    enemy.pos.y = playerPos.y;
-    enemy.element.style.left = enemy.pos.x + 'px';
-    enemy.element.style.top = enemy.pos.y + 'px';
-  }
 }
