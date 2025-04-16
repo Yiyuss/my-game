@@ -9,14 +9,16 @@ body {
 #start-btn {
   font-size: 18px;
   padding: 10px 20px;
-  margin-top: 20px;
-  position: relative;
-  z-index: 10000; /* 確保按鈕在最上層 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);  /* 居中顯示 */
   background-color: #fff;
   color: #000;
   border: none;
   cursor: pointer;
   border-radius: 8px;
+  z-index: 1000;
 }
 
 #scoreboard {
@@ -31,11 +33,12 @@ body {
   width: 1024px;
   height: 576px;
   margin: 20px auto;
-  background-image: url('170117-2330-1-VqLzt.jpg');  /* 這裡是背景圖片 */
+  background-image: url('170117-2330-1-VqLzt.jpg');  /* 背景圖片 */
   background-size: cover;
   background-position: center;
   border: 3px solid white;
   overflow: hidden;
+  z-index: 0;
 }
 
 #video-overlay {
@@ -52,15 +55,15 @@ body {
 }
 
 #end-video {
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 80%;
 }
 
 #player {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-image: url('01.png');  /* 這裡是角色圖片 */
+  background-image: url('01.png');  /* 角色圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 10;
@@ -70,7 +73,7 @@ body {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-image: url('02.png');  /* 這裡是敵人圖片 */
+  background-image: url('02.png');  /* 敵人圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 10;
