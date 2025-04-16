@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>網頁遊戲</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>遊戲測試</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="ui">
-        <div id="timer">時間：0 秒</div>
-        <button id="startButton">開始遊戲</button>
-    </div>
+  <div id="top-ui">
+    <div id="timer">時間：0 秒</div>
+    <button id="startButton">開始遊戲</button>
+  </div>
+
+  <div id="gameContainer">
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <video id="video" src="001.mp4" controls></video>
+  </div>
 
-    <video id="video" width="800" height="600" controls style="display: none; position: absolute; top: 0; left: 0; z-index: 10;">
-        <source src="001.mp4" type="video/mp4" />
-        您的瀏覽器不支援影片播放。
-    </video>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
