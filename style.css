@@ -1,40 +1,48 @@
 body {
   margin: 0;
-  overflow: hidden;
-  background: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg') no-repeat center center fixed;
+  padding: 0;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#gameContainer {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  background-image: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg');
   background-size: cover;
+  background-position: center;
+  overflow: hidden;
 }
 
-#game-canvas {
-  display: block;
-  margin: 0 auto;
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1;
-}
-
-#start-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px 40px;
-  font-size: 24px;
-  background-color: #28a;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  z-index: 10;
-}
-
-#game-video {
+canvas {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1;
+}
+
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: none;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: 5;
-  display: none;
+}
+
+#startButton {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px 30px;
+  font-size: 20px;
+  cursor: pointer;
 }
