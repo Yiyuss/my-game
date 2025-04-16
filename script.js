@@ -191,26 +191,8 @@ function moveEnemy(enemy) {
     enemy.pos.x += (dx / dist) * speed;
     enemy.pos.y += (dy / dist) * speed;
 
-    // 確保敵人不會重疊
-    let collision = false;
-    enemies.forEach(otherEnemy => {
-      if (otherEnemy !== enemy) {
-        let enemyRect = enemy.element.getBoundingClientRect();
-        let otherEnemyRect = otherEnemy.element.getBoundingClientRect();
-        if (
-          enemyRect.left < otherEnemyRect.right &&
-          enemyRect.right > otherEnemyRect.left &&
-          enemyRect.top < otherEnemyRect.bottom &&
-          enemyRect.bottom > otherEnemyRect.top
-        ) {
-          collision = true;
-        }
-      }
-    });
-
-    if (!collision) {
-      enemy.element.style.left = enemy.pos.x + 'px';
-      enemy.element.style.top = enemy.pos.y + 'px';
-    }
+    // 更新敵人位置
+    enemy.element.style.left = enemy.pos.x + 'px';
+    enemy.element.style.top = enemy.pos.y + 'px';
   }
 }
