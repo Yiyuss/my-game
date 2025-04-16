@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>遊戲</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小遊戲</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="gameContainer">
-    <img id="player" src="https://raw.githubusercontent.com/Yiyuss/my-game/main/01.png" />
-    <video id="cutscene" src="https://raw.githubusercontent.com/Yiyuss/my-game/main/001.mp4"></video>
-    <button id="startButton">開始遊戲</button>
+    <img id="background" src="https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg" alt="背景" />
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <video id="cutscene" src="https://raw.githubusercontent.com/Yiyuss/my-game/main/001.mp4" preload="auto"></video>
+    <button id="startBtn">開始遊戲</button>
   </div>
   <script src="script.js"></script>
 </body>
