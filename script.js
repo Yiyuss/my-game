@@ -65,7 +65,7 @@ function spawnEnemy() {
   enemyObj.element.style.position = 'absolute';
   enemyObj.element.style.width = '50px';
   enemyObj.element.style.height = '50px';
-  enemyObj.element.style.backgroundImage = 'url("角色02.png")';  // 使用本地敵人圖片
+  enemyObj.element.style.backgroundImage = 'url("敵人角色02.png")';  // 使用本地敵人圖片
   enemyObj.element.style.backgroundSize = 'cover';
   enemyObj.element.style.backgroundRepeat = 'no-repeat';
   gameContainer.appendChild(enemyObj.element);
@@ -149,7 +149,7 @@ function checkCollision(enemyObj) {
 
 // 顯示影片
 function showVideo() {
-  endVideo.src = 'https://www.youtube.com/embed/Qybud8_paik?autoplay=1';  // 使用YouTube影片
+  endVideo.src = '影片001.mp4';  // 使用本地影片
   videoOverlay.style.display = 'flex';
   gameRunning = false;
 
