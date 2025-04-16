@@ -2,6 +2,7 @@ const player = document.getElementById("player");
 const startButton = document.getElementById("startButton");
 const cutscene = document.getElementById("cutscene");
 const gameContainer = document.getElementById("gameContainer");
+
 let enemies = [];
 let keys = {};
 let gameRunning = false;
@@ -10,16 +11,14 @@ let playerX = 100, playerY = 100;
 const speed = 5;
 const enemySpeed = 1.5;
 
-startButton.addEventListener("click", () => {
-  startButton.style.display = "none";
-  startGame();
-});
+document.addEventListener("DOMContentLoaded", () => {
+  startButton.addEventListener("click", () => {
+    startButton.style.display = "none";
+    startGame();
+  });
 
-document.addEventListener("keydown", (e) => {
-  keys[e.key] = true;
-});
-document.addEventListener("keyup", (e) => {
-  keys[e.key] = false;
+  document.addEventListener("keydown", e => keys[e.key] = true);
+  document.addEventListener("keyup", e => keys[e.key] = false);
 });
 
 function movePlayer() {
@@ -38,10 +37,12 @@ function createEnemy() {
   const enemy = document.createElement("img");
   enemy.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png";
   enemy.className = "enemy";
-  enemy.style.left = Math.random() * 750 + "px";
-  enemy.style.top = Math.random() * 550 + "px";
+  enemy.x = Math.random() * 750;
+  enemy.y = Math.random() * 550;
+  enemy.style.left = enemy.x + "px";
+  enemy.style.top = enemy.y + "px";
   gameContainer.appendChild(enemy);
-  enemies.push({ element: enemy, x: parseFloat(enemy.style.left), y: parseFloat(enemy.style.top) });
+  enemies.push(enemy);
 }
 
 function moveEnemies() {
@@ -49,21 +50,22 @@ function moveEnemies() {
     const dx = playerX - enemy.x;
     const dy = playerY - enemy.y;
     const dist = Math.hypot(dx, dy);
-    const avoidVector = { x: 0, y: 0 };
+
+    let avoidX = 0, avoidY = 0;
 
     enemies.forEach(other => {
       if (enemy === other) return;
-      const ox = other.x - enemy.x;
-      const oy = other.y - enemy.y;
+      const ox = enemy.x - other.x;
+      const oy = enemy.y - other.y;
       const odist = Math.hypot(ox, oy);
-      if (odist < 50) {
-        avoidVector.x -= ox / odist;
-        avoidVector.y -= oy / odist;
+      if (odist < 50 && odist > 0) {
+        avoidX += ox / odist;
+        avoidY += oy / odist;
       }
     });
 
-    let vx = (dx / dist) * enemySpeed + avoidVector.x;
-    let vy = (dy / dist) * enemySpeed + avoidVector.y;
+    let vx = dx / dist + avoidX;
+    let vy = dy / dist + avoidY;
     const len = Math.hypot(vx, vy);
     vx = (vx / len) * enemySpeed;
     vy = (vy / len) * enemySpeed;
@@ -74,8 +76,8 @@ function moveEnemies() {
     enemy.x = Math.max(0, Math.min(enemy.x, 750));
     enemy.y = Math.max(0, Math.min(enemy.y, 550));
 
-    enemy.element.style.left = enemy.x + "px";
-    enemy.element.style.top = enemy.y + "px";
+    enemy.style.left = enemy.x + "px";
+    enemy.style.top = enemy.y + "px";
 
     if (Math.abs(playerX - enemy.x) < 40 && Math.abs(playerY - enemy.y) < 40) {
       playCutscene();
@@ -96,7 +98,7 @@ function startGame() {
   playerY = 100;
   player.style.left = playerX + "px";
   player.style.top = playerY + "px";
-  enemies.forEach(e => e.element.remove());
+  enemies.forEach(e => e.remove());
   enemies = [];
   for (let i = 0; i < 5; i++) createEnemy();
   requestAnimationFrame(gameLoop);
