@@ -1,92 +1,154 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const startButton = document.getElementById('start-button');
-  const gameCanvas = document.getElementById('game-canvas');
-  const gameVideo = document.getElementById('game-video');
-  const ctx = gameCanvas.getContext('2d');
-  
-  let gameStarted = false;
-  
-  // 用來控制遊戲開始與重置
-  function startGame() {
-    if (!gameStarted) {
-      gameStarted = true;
-      startButton.style.display = 'none';  // 隱藏開始按鈕
-      gameVideo.style.display = 'block';  // 顯示影片
-      gameVideo.play();
-      
-      // 初始化遊戲元素，如玩家、敵人等
-      initGame();
-    }
-  }
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const video = document.getElementById("gameVideo");
+const startButton = document.getElementById("startButton");
 
-  startButton.addEventListener('click', startGame);
+const gameWidth = canvas.width;
+const gameHeight = canvas.height;
 
-  // 初始化遊戲元素
-  function initGame() {
-    // 重置玩家位置、分數、敵人等
-    player.resetPosition();
-    enemies.reset();
-    // 確保畫面更新
-    requestAnimationFrame(gameLoop);
-  }
+const playerImg = new Image();
+playerImg.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/01.png";
 
-  // 遊戲主循環
-  function gameLoop() {
-    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // 清除畫布
-    drawPlayer();  // 繪製玩家
-    drawEnemies(); // 繪製敵人
+const enemyImg = new Image();
+enemyImg.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png";
 
-    // 動畫循環
-    requestAnimationFrame(gameLoop);
-  }
+let playerX = gameWidth / 2 - 25;
+let playerY = gameHeight / 2 - 25;
+let playerSpeed = 5;
 
-  function drawPlayer() {
-    // 使用 canvas 渲染玩家
-    ctx.drawImage(player.image, player.x, player.y);
-  }
+let enemies = [];
+let enemySpeed = 1.5;
+let lastEnemySpawnTime = 0;
+let spawnInterval = 3000;
 
-  function drawEnemies() {
-    // 使用 canvas 渲染敵人
-    enemies.forEach(enemy => {
-      ctx.drawImage(enemy.image, enemy.x, enemy.y);
-    });
-  }
+let score = 0;
+let gameRunning = false;
+let keys = {};
 
-  // 假設你的玩家和敵人對象，這些可以根據需求進行調整
-  let player = {
-    x: 100,
-    y: 100,
-    image: new Image(),
-    resetPosition() {
-      this.x = 100;
-      this.y = 100;
-    }
-  };
+function drawPlayer() {
+  ctx.drawImage(playerImg, playerX, playerY, 50, 50);
+}
 
-  let enemies = [];
-  // 假設有一些敵人初始化
-  for (let i = 0; i < 5; i++) {
-    enemies.push({
-      x: Math.random() * 800,
-      y: Math.random() * 600,
-      image: new Image()
-    });
-  }
-
-  player.image.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/角色01.png';
+function drawEnemies() {
   enemies.forEach(enemy => {
-    enemy.image.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/敵人角色02.png';
+    ctx.drawImage(enemyImg, enemy.x, enemy.y, 50, 50);
   });
+}
 
-  // 處理滑鼠與鍵盤事件
-  window.addEventListener('keydown', handleKeyboardMovement);
-  
-  function handleKeyboardMovement(event) {
-    switch (event.key) {
-      case 'ArrowUp': player.y -= 5; break;
-      case 'ArrowDown': player.y += 5; break;
-      case 'ArrowLeft': player.x -= 5; break;
-      case 'ArrowRight': player.x += 5; break;
+function moveEnemies() {
+  enemies.forEach(enemy => {
+    let dx = playerX - enemy.x;
+    let dy = playerY - enemy.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 0) {
+      enemy.x += (dx / dist) * enemySpeed;
+      enemy.y += (dy / dist) * enemySpeed;
+    }
+  });
+}
+
+function spawnEnemy() {
+  const positions = [
+    { x: 0, y: 0 },
+    { x: gameWidth - 50, y: 0 },
+    { x: 0, y: gameHeight - 50 },
+    { x: gameWidth - 50, y: gameHeight - 50 }
+  ];
+  const pos = positions[Math.floor(Math.random() * positions.length)];
+  enemies.push({ x: pos.x, y: pos.y });
+}
+
+function checkCollisions() {
+  for (let enemy of enemies) {
+    if (
+      playerX < enemy.x + 50 &&
+      playerX + 50 > enemy.x &&
+      playerY < enemy.y + 50 &&
+      playerY + 50 > enemy.y
+    ) {
+      endGame();
+      return;
     }
   }
+}
+
+function updateScore() {
+  ctx.fillStyle = "white";
+  ctx.font = "20px Arial";
+  ctx.fillText("分數：" + score, 10, 30);
+}
+
+function animate() {
+  if (!gameRunning) return;
+
+  ctx.clearRect(0, 0, gameWidth, gameHeight);
+
+  drawPlayer();
+  drawEnemies();
+  moveEnemies();
+  checkCollisions();
+  updateScore();
+
+  if (Date.now() - lastEnemySpawnTime > spawnInterval) {
+    spawnEnemy();
+    lastEnemySpawnTime = Date.now();
+  }
+
+  score++;
+  requestAnimationFrame(animate);
+}
+
+startButton.addEventListener("click", function () {
+  startButton.style.display = "none";
+  score = 0;
+  gameRunning = true;
+  playerX = gameWidth / 2 - 25;
+  playerY = gameHeight / 2 - 25;
+  enemies = [];
+  video.pause();
+  video.currentTime = 0;
+  video.style.display = "none";
+  spawnEnemy();
+  lastEnemySpawnTime = Date.now();
+  updateScore();
+  animate();
 });
+
+function endGame() {
+  gameRunning = false;
+  video.style.display = "block";
+  video.play();
+  video.onended = () => {
+    startButton.style.display = "block";
+    enemies = [];
+  };
+}
+
+document.addEventListener("keydown", e => {
+  keys[e.key] = true;
+});
+
+document.addEventListener("keyup", e => {
+  keys[e.key] = false;
+});
+
+function handlePlayerMovement() {
+  if (keys["ArrowUp"] || keys["w"]) playerY -= playerSpeed;
+  if (keys["ArrowDown"] || keys["s"]) playerY += playerSpeed;
+  if (keys["ArrowLeft"] || keys["a"]) playerX -= playerSpeed;
+  if (keys["ArrowRight"] || keys["d"]) playerX += playerSpeed;
+}
+
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  playerX = x - 25;
+  playerY = y - 25;
+});
+
+setInterval(() => {
+  if (gameRunning) {
+    handlePlayerMovement();
+  }
+}, 1000 / 60);
