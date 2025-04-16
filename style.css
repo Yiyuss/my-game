@@ -1,40 +1,93 @@
-body {
-  margin: 0;
-  overflow: hidden;
-  background: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg') no-repeat center center fixed;
-  background-size: cover;
-}
-
+/* 遊戲畫布 */
 #game-canvas {
+  width: 800px; /* 設定遊戲畫布寬度 */
+  height: 600px; /* 設定遊戲畫布高度 */
+  background-color: black; /* 設定背景顏色為黑色 */
+  border: 5px solid black; /* 添加邊框顏色 */
+  margin: 0 auto; /* 居中顯示 */
   display: block;
-  margin: 0 auto;
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1;
 }
 
+/* 影片樣式 */
+#game-video {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: cover; /* 讓影片不會超出視窗 */
+  z-index: -1; /* 確保影片位於背景層下 */
+}
+
+/* 開始遊戲按鈕 */
 #start-button {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px 40px;
-  font-size: 24px;
-  background-color: #28a;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 5px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 1; /* 確保按鈕位於最前 */
 }
 
-#game-video {
+#start-button:hover {
+  background-color: #0056b3; /* 鼠標懸停時按鈕顏色 */
+}
+
+/* 輸入框、標題等其他樣式 */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #222;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+p {
+  color: white;
+  text-align: center;
+}
+
+/* 輸入框 */
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* 使用者與遊戲角色的樣式 */
+.player, .enemy {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 5;
-  display: none;
+  width: 50px; /* 角色大小 */
+  height: 50px;
+}
+
+.player {
+  background-color: red; /* 玩家顏色 */
+}
+
+.enemy {
+  background-color: green; /* 敵人顏色 */
 }
