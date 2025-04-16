@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>追逐遊戲</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>太空小遊戲</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div id="game-container">
+    <button id="start-btn">開始遊戲</button>
+    <div id="score-board">分數: 0</div>
+    <div id="time-board">時間: 0</div>
     <div id="player"></div>
     <div id="enemy"></div>
-    <button id="start-btn">開始遊戲</button>
-    <div id="score-board">分數: <span id="score">0</span></div>
-    <div id="time-board">倒數: <span id="time">30</span></div>
     <div id="video-overlay">
-      <iframe
-        id="end-video"
-        width="560"
-        height="315"
-        src=""
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-      ></iframe>
+      <iframe id="end-video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
   </div>
   <script src="script.js"></script>
