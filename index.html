@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>遊戲測試</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>小遊戲</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="top-ui">
-    <div id="timer">時間：0 秒</div>
-    <button id="startButton">開始遊戲</button>
+  <div class="game-container">
+    <div id="gameArea">
+      <img id="player" src="01.png" alt="player">
+      <img id="enemy" src="02.png" alt="enemy">
+      <video id="cutscene" src="001.mp4" class="hidden" autoplay></video>
+    </div>
+    <div id="ui">
+      <div id="timer">時間：0秒</div>
+      <button id="startButton">開始遊戲</button>
+    </div>
   </div>
-
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <video id="video" src="001.mp4" controls></video>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>
