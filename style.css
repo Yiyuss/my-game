@@ -11,7 +11,7 @@ body {
   padding: 10px 20px;
   margin-top: 20px;
   position: relative;
-  z-index: 10000; /* 確保在最上層 */
+  z-index: 10000; /* 確保按鈕在最上層 */
   background-color: #fff;
   color: #000;
   border: none;
@@ -31,7 +31,7 @@ body {
   width: 1024px;
   height: 576px;
   margin: 20px auto;
-  background-image: url('170117-2330-1-VqLzt.jpg');
+  background-image: url('170117-2330-1-VqLzt.jpg');  /* 這裡是背景圖片 */
   background-size: cover;
   background-position: center;
   border: 3px solid white;
@@ -60,7 +60,7 @@ body {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-image: url('01.png');
+  background-image: url('01.png');  /* 這裡是角色圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 10;
@@ -70,7 +70,7 @@ body {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-image: url('02.png');
+  background-image: url('02.png');  /* 這裡是敵人圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 10;
