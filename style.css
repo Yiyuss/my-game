@@ -1,75 +1,56 @@
-body {
+* {
   margin: 0;
-  font-family: sans-serif;
-  background-color: #000;
-  color: white;
-  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
 }
-
-#game-container {
-  position: relative;
-  width: 1024px;
-  height: 576px;
-  margin: 0 auto;
-  background-image: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg');
-  background-size: cover;
-  background-position: center;
-  border: 3px solid white;
-  overflow: hidden;
-}
-
-#video-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+body {
   background-color: black;
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  height: 100vh;
 }
-
-#cutscene {
+#gameContainer {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  background: black;
+}
+#background {
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0;
 }
-
 #player {
+  position: absolute;
   width: 50px;
   height: 50px;
+  z-index: 2;
+}
+.enemy {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  z-index: 1;
+}
+#cutscene {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  z-index: 5;
+}
+#startButton {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
-}
-
-.enemy {
-  width: 50px;
-  height: 50px;
-  background-image: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  position: absolute;
-  z-index: 1;
-}
-
-#score, #timer {
+  padding: 15px 30px;
   font-size: 20px;
-  margin: 5px;
-  display: inline-block;
-}
-
-#start-btn {
-  font-size: 18px;
-  padding: 10px 20px;
-  margin: 10px;
+  z-index: 6;
   cursor: pointer;
-  background-color: #444;
-  color: white;
-  border: 1px solid white;
-  border-radius: 8px;
 }
