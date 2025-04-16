@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Game</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>遊戲</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <!-- 遊戲畫面容器 -->
-        <button id="start-btn">Start Game</button> <!-- 開始遊戲按鈕 -->
-        <div id="player"></div> <!-- 玩家角色 -->
-        <div id="scoreboard">
-            <span id="score">0</span> / <span id="time">0</span>
-        </div>
-        <div id="video-overlay">
-            <iframe id="end-video" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
+  <div id="game-container">
+    <div id="player"></div>
+    <div id="scoreboard">
+      <span id="score">0</span> | <span id="time">0</span>
     </div>
+    <div id="start-btn">開始遊戲</div>
+  </div>
 
-    <audio id="hit-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio> <!-- 播放音效 -->
+  <div id="video-overlay">
+    <iframe id="end-video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
 
-    <script src="script.js"></script> <!-- 引入 JavaScript 文件 -->
+  <audio id="hit-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+  <script src="script.js"></script>
 </body>
 </html>
