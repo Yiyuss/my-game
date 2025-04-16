@@ -2,21 +2,95 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>小遊戲</title>
-  <link rel="stylesheet" href="style.css">
+  <title>我的遊戲</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #000;
+      color: white;
+      text-align: center;
+    }
+
+    #start-btn {
+      position: absolute;
+      top: -100px; /* 移到畫面外 */
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      padding: 10px 20px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #scoreboard {
+      font-size: 20px;
+      margin: 10px;
+    }
+
+    #game-container {
+      position: relative;
+      width: 1024px;
+      height: 576px;
+      margin: 0 auto;
+      background-image: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg');
+      background-size: cover;
+      background-position: center;
+      border: 3px solid white;
+      overflow: hidden;
+    }
+
+    #video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #end-video {
+      width: 100%;
+      height: 100%;
+    }
+
+    #player {
+      background-image: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/01.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: absolute;
+      width: 50px;
+      height: 50px;
+    }
+
+    .enemy {
+      background-image: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: absolute;
+      width: 50px;
+      height: 50px;
+    }
+  </style>
 </head>
 <body>
-  <div class="game-container">
-    <div id="gameArea">
-      <img id="player" src="01.png" alt="player">
-      <img id="enemy" src="02.png" alt="enemy">
-      <video id="cutscene" src="001.mp4" class="hidden" autoplay></video>
-    </div>
-    <div id="ui">
-      <div id="timer">時間：0秒</div>
-      <button id="startButton">開始遊戲</button>
-    </div>
+  <button id="start-btn">開始遊戲</button>
+  <div id="scoreboard">
+    得分: <span id="score">0</span> |
+    時間: <span id="time">0</span> 秒
   </div>
+  <div id="game-container">
+    <div id="video-overlay">
+      <video id="end-video" autoplay muted></video>
+    </div>
+    <div id="player"></div>
+  </div>
+  <audio id="hit-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
   <script src="script.js"></script>
 </body>
 </html>
