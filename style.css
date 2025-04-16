@@ -13,7 +13,7 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* 確保背景圖片覆蓋整個視窗 */
 }
 
 #gameCanvas {
