@@ -18,17 +18,25 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let enemies = [];
-  for (let i = 0; i < 5; i++) {
-    enemies.push({
-      x: Math.random() * 800,
-      y: Math.random() * 600,
-      image: new Image(),
-      speed: 2
-    });
-  }
+  const enemyCount = 5;
 
   // 加載資源
   player.image.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/角色01.png';
+
+  // 生成敵人
+  function generateEnemies() {
+    enemies = [];
+    for (let i = 0; i < enemyCount; i++) {
+      enemies.push({
+        x: Math.random() * 800,
+        y: Math.random() * 600,
+        image: new Image(),
+        speed: 2
+      });
+    }
+  }
+
+  // 加載敵人圖片
   enemies.forEach(enemy => {
     enemy.image.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/敵人角色02.png';
   });
@@ -51,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初始化遊戲
   function initGame() {
     player.resetPosition();
-    enemies.forEach(enemy => {
-      enemy.x = Math.random() * 800;
-      enemy.y = Math.random() * 600;
-    });
+    generateEnemies(); // 重新生成敵人
+    gameVideo.currentTime = 0; // 重設影片播放時間
+    gameVideo.play(); // 播放影片
+
     // 確保畫面更新
     requestAnimationFrame(gameLoop);
   }
@@ -76,7 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawBackground() {
-    ctx.fillStyle = 'black'; // 背景顏色
+    // 繪製背景，讓背景不會超過視窗邊界
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
   }
 
