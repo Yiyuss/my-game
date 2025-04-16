@@ -1,133 +1,115 @@
 const player = document.getElementById("player");
-const enemiesContainer = document.getElementById("enemies");
-const scoreDisplay = document.getElementById("score");
-const timerDisplay = document.getElementById("timer");
-const videoOverlay = document.getElementById("video-overlay");
+const startButton = document.getElementById("startButton");
 const cutscene = document.getElementById("cutscene");
-const startBtn = document.getElementById("start-btn");
-
-let score = 0;
+const gameContainer = document.getElementById("gameContainer");
 let enemies = [];
-let isGameRunning = false;
-let speed = 2;
 let keys = {};
+let gameRunning = false;
 
-const gameWidth = 1024;
-const gameHeight = 576;
+let playerX = 100, playerY = 100;
+const speed = 5;
+const enemySpeed = 1.5;
 
-document.addEventListener("keydown", e => keys[e.key] = true);
-document.addEventListener("keyup", e => keys[e.key] = false);
+startButton.addEventListener("click", () => {
+  startButton.style.display = "none";
+  startGame();
+});
 
-function resetGame() {
-  score = 0;
-  enemies = [];
-  enemiesContainer.innerHTML = "";
-  player.style.top = "50%";
-  player.style.left = "50%";
-  scoreDisplay.textContent = score;
-  timerDisplay.textContent = 0;  // 去除計時器
-}
+document.addEventListener("keydown", (e) => {
+  keys[e.key] = true;
+});
+document.addEventListener("keyup", (e) => {
+  keys[e.key] = false;
+});
 
 function movePlayer() {
-  const step = 5;
-  const rect = player.getBoundingClientRect();
-  const containerRect = enemiesContainer.getBoundingClientRect();
+  if (keys["ArrowUp"]) playerY -= speed;
+  if (keys["ArrowDown"]) playerY += speed;
+  if (keys["ArrowLeft"]) playerX -= speed;
+  if (keys["ArrowRight"]) playerX += speed;
 
-  let top = player.offsetTop;
-  let left = player.offsetLeft;
-
-  if (keys["ArrowUp"] && top > 0) top -= step;
-  if (keys["ArrowDown"] && top + player.offsetHeight < gameHeight) top += step;
-  if (keys["ArrowLeft"] && left > 0) left -= step;
-  if (keys["ArrowRight"] && left + player.offsetWidth < gameWidth) left += step;
-
-  player.style.top = top + "px";
-  player.style.left = left + "px";
+  playerX = Math.max(0, Math.min(playerX, 750));
+  playerY = Math.max(0, Math.min(playerY, 550));
+  player.style.left = playerX + "px";
+  player.style.top = playerY + "px";
 }
 
-function spawnEnemy() {
-  const enemy = document.createElement("div");
-  enemy.classList.add("enemy");
-
-  let x = Math.random() * (gameWidth - 50);
-  let y = Math.random() * (gameHeight - 50);
-
-  enemy.style.left = x + "px";
-  enemy.style.top = y + "px";
-  enemiesContainer.appendChild(enemy);
-
-  enemies.push({
-    el: enemy,
-    x,
-    y,
-    dx: 0,
-    dy: 0
-  });
+function createEnemy() {
+  const enemy = document.createElement("img");
+  enemy.src = "https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png";
+  enemy.className = "enemy";
+  enemy.style.left = Math.random() * 750 + "px";
+  enemy.style.top = Math.random() * 550 + "px";
+  gameContainer.appendChild(enemy);
+  enemies.push({ element: enemy, x: parseFloat(enemy.style.left), y: parseFloat(enemy.style.top) });
 }
 
 function moveEnemies() {
   enemies.forEach(enemy => {
-    const dx = player.offsetLeft - enemy.x;
-    const dy = player.offsetTop - enemy.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const direction = distance === 0 ? { x: 0, y: 0 } : { x: dx / distance, y: dy / distance };
-    
-    enemy.dx = direction.x * speed;
-    enemy.dy = direction.y * speed;
+    const dx = playerX - enemy.x;
+    const dy = playerY - enemy.y;
+    const dist = Math.hypot(dx, dy);
+    const avoidVector = { x: 0, y: 0 };
 
-    enemy.x += enemy.dx;
-    enemy.y += enemy.dy;
+    enemies.forEach(other => {
+      if (enemy === other) return;
+      const ox = other.x - enemy.x;
+      const oy = other.y - enemy.y;
+      const odist = Math.hypot(ox, oy);
+      if (odist < 50) {
+        avoidVector.x -= ox / odist;
+        avoidVector.y -= oy / odist;
+      }
+    });
 
-    enemy.el.style.left = enemy.x + "px";
-    enemy.el.style.top = enemy.y + "px";
+    let vx = (dx / dist) * enemySpeed + avoidVector.x;
+    let vy = (dy / dist) * enemySpeed + avoidVector.y;
+    const len = Math.hypot(vx, vy);
+    vx = (vx / len) * enemySpeed;
+    vy = (vy / len) * enemySpeed;
+
+    enemy.x += vx;
+    enemy.y += vy;
+
+    enemy.x = Math.max(0, Math.min(enemy.x, 750));
+    enemy.y = Math.max(0, Math.min(enemy.y, 550));
+
+    enemy.element.style.left = enemy.x + "px";
+    enemy.element.style.top = enemy.y + "px";
+
+    if (Math.abs(playerX - enemy.x) < 40 && Math.abs(playerY - enemy.y) < 40) {
+      playCutscene();
+    }
   });
 }
 
-function checkCollision() {
-  const playerRect = player.getBoundingClientRect();
-  for (let enemy of enemies) {
-    const enemyRect = enemy.el.getBoundingClientRect();
-    if (
-      playerRect.left < enemyRect.right &&
-      playerRect.right > enemyRect.left &&
-      playerRect.top < enemyRect.bottom &&
-      playerRect.bottom > enemyRect.top
-    ) {
-      endGame();
-      return;
-    }
-  }
-}
-
-function updateGame() {
+function gameLoop() {
+  if (!gameRunning) return;
   movePlayer();
   moveEnemies();
-  checkCollision();
+  requestAnimationFrame(gameLoop);
 }
 
 function startGame() {
-  resetGame();
-  isGameRunning = true;
-  videoOverlay.style.display = "none";
-
-  gameInterval = setInterval(updateGame, 20);
-  spawnInterval = setInterval(spawnEnemy, 2000);
+  gameRunning = true;
+  playerX = 100;
+  playerY = 100;
+  player.style.left = playerX + "px";
+  player.style.top = playerY + "px";
+  enemies.forEach(e => e.element.remove());
+  enemies = [];
+  for (let i = 0; i < 5; i++) createEnemy();
+  requestAnimationFrame(gameLoop);
 }
 
-function endGame() {
-  isGameRunning = false;
-  clearInterval(gameInterval);
-  clearInterval(spawnInterval);
-
-  videoOverlay.style.display = "flex";
+function playCutscene() {
+  gameRunning = false;
   cutscene.currentTime = 0;
+  cutscene.style.display = "block";
+  cutscene.muted = false;
   cutscene.play();
-
   cutscene.onended = () => {
-    startGame(); // 自動重新開始
+    cutscene.style.display = "none";
+    startGame();
   };
 }
-
-startBtn.addEventListener("click", () => {
-  if (!isGameRunning) startGame();
-});
