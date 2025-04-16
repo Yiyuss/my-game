@@ -117,29 +117,55 @@ function moveEnemy(enemy) {
     enemy.pos.x += (dx / dist) * speed;
     enemy.pos.y += (dy / dist) * speed;
     enemy.element.style.left = enemy.pos.x + 'px';
-   
-
-ChatGPT 說：
-
-enemy.element.style.top = enemy.pos.y + 'px'; } }
-
-// 更新遊戲狀態 function updateGame() { if (gameRunning) { movePlayer(); // 控制玩家移動 checkCollisions(); // 檢查碰撞 } }
-
-// 檢查玩家與敵人是否碰撞 function checkCollisions() { for (const enemy of enemies) { const dx = playerPos.x - enemy.pos.x; const dy = playerPos.y - enemy.pos.y; const dist = Math.sqrt(dx * dx + dy * dy);
-
-if (dist < 50) {
-  hitSound.play();
-  showGameOverVideo();  // 播放結束影片
-  gameRunning = false;
-  break;
+    enemy.element.style.top = enemy.pos.y + 'px';
+  }
 }
 
-} }
+// 更新遊戲狀態
+function updateGame() {
+  if (gameRunning) {
+    movePlayer();  // 控制玩家移動
+    checkCollisions();  // 檢查碰撞
+  }
+}
 
-// 顯示遊戲結束影片 function showGameOverVideo() { videoOverlay.style.display = 'flex'; endVideo.src = 'https://www.youtube.com/embed/your_video_id?autoplay=1'; }
+// 檢查玩家與敵人是否碰撞
+function checkCollisions() {
+  for (const enemy of enemies) {
+    const dx = playerPos.x - enemy.pos.x;
+    const dy = playerPos.y - enemy.pos.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
 
-// 檢查影片是否正在播放 function isVideoPlaying() { return videoOverlay.style.display === 'flex'; }
+    if (dist < 50) {
+      hitSound.play();
+      showGameOverVideo();  // 播放結束影片
+      gameRunning = false;
+      break;
+    }
+  }
+}
 
-// 重置遊戲狀態 function resetGame() { playerPos = { x: 200, y: 200 }; score = 0; time = 0; enemies = []; gameRunning = false;
+// 顯示遊戲結束影片
+function showGameOverVideo() {
+  videoOverlay.style.display = 'flex';
+  endVideo.src = 'https://www.youtube.com/embed/your_video_id?autoplay=1';
+}
 
-scoreEl.textContent = 分數: ${score}; timeEl.textContent = 時間: ${time}; videoOverlay.style.display = 'none'; endVideo.src = ''; }
+// 檢查影片是否正在播放
+function isVideoPlaying() {
+  return videoOverlay.style.display === 'flex';
+}
+
+// 重置遊戲狀態
+function resetGame() {
+  playerPos = { x: 200, y: 200 };
+  score = 0;
+  time = 0;
+  enemies = [];
+  gameRunning = false;
+
+  scoreEl.textContent = `分數: ${score}`;
+  timeEl.textContent = `時間: ${time}`;
+  videoOverlay.style.display = 'none';
+  endVideo.src = '';
+}
