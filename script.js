@@ -1,148 +1,132 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // 取得元素
-  const startButton = document.getElementById('start-button');
-  const gameCanvas = document.getElementById('game-canvas');
-  const gameVideo = document.getElementById('game-video');
-  const ctx = gameCanvas.getContext('2d');
+// 設定畫布和影片
+const canvas = document.getElementById("game-canvas");
+const ctx = canvas.getContext("2d");
+const video = document.getElementById("game-video");
+const startButton = document.getElementById("start-button");
 
-  let gameStarted = false;
-  let player = {
-    x: 100,
-    y: 100,
-    image: new Image(),
+let player, enemies = [];
+let gameRunning = false;
+let gameInterval;
+
+// 設定玩家角色
+function createPlayer() {
+  player = {
+    x: canvas.width / 2 - 25,
+    y: canvas.height / 2 - 25,
+    width: 50,
+    height: 50,
     speed: 5,
-    resetPosition() {
-      this.x = 100;
-      this.y = 100;
-    }
+    color: "red",
+    dx: 0,
+    dy: 0,
   };
+}
 
-  let enemies = [];
-  const enemyCount = 5;
-
-  // 加載資源
-  player.image.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/角色01.png';
-
-  // 生成敵人
-  function generateEnemies() {
-    enemies = [];
-    for (let i = 0; i < enemyCount; i++) {
-      enemies.push({
-        x: Math.random() * 800,
-        y: Math.random() * 600,
-        image: new Image(),
-        speed: 2
-      });
-    }
+// 設定敵人
+function createEnemies(num) {
+  for (let i = 0; i < num; i++) {
+    enemies.push({
+      x: Math.random() * (canvas.width - 50),
+      y: Math.random() * (canvas.height - 50),
+      width: 50,
+      height: 50,
+      color: "green",
+      speed: 2,
+    });
   }
+}
 
-  // 加載敵人圖片
+// 更新遊戲畫面
+function updateGame() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除畫布
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x, player.y, player.width, player.height); // 畫出玩家角色
+
+  // 更新敵人位置
   enemies.forEach(enemy => {
-    enemy.image.src = 'https://raw.githubusercontent.com/Yiyuss/my-game/main/敵人角色02.png';
+    enemy.x += (player.x - enemy.x) * 0.01;
+    enemy.y += (player.y - enemy.y) * 0.01;
+    ctx.fillStyle = enemy.color;
+    ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height); // 畫出敵人
   });
 
-  // 設置遊戲初始化
-  function startGame() {
-    if (!gameStarted) {
-      gameStarted = true;
-      startButton.style.display = 'none';  // 隱藏開始按鈕
-      gameVideo.style.display = 'block';  // 顯示影片
-      gameVideo.play();
-      
-      // 初始化遊戲元素
-      initGame();
-    }
-  }
+  movePlayer();
+}
 
-  startButton.addEventListener('click', startGame);
+// 控制玩家移動
+function movePlayer() {
+  player.x += player.dx;
+  player.y += player.dy;
 
-  // 初始化遊戲
-  function initGame() {
-    player.resetPosition();
-    generateEnemies(); // 重新生成敵人
-    gameVideo.currentTime = 0; // 重設影片播放時間
-    gameVideo.play(); // 播放影片
+  // 防止玩家移出邊界
+  if (player.x < 0) player.x = 0;
+  if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+  if (player.y < 0) player.y = 0;
+  if (player.y + player.height > canvas.height) player.y = canvas.height - player.height;
+}
 
-    // 確保畫面更新
-    requestAnimationFrame(gameLoop);
-  }
+// 處理鍵盤按鍵
+function keyDownHandler(e) {
+  if (e.key === "ArrowUp") player.dy = -player.speed;
+  if (e.key === "ArrowDown") player.dy = player.speed;
+  if (e.key === "ArrowLeft") player.dx = -player.speed;
+  if (e.key === "ArrowRight") player.dx = player.speed;
+}
 
-  // 遊戲主循環
-  function gameLoop() {
-    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height); // 清除畫布
-    drawBackground(); // 繪製背景
-    drawPlayer();  // 繪製玩家
-    drawEnemies(); // 繪製敵人
+function keyUpHandler(e) {
+  if (e.key === "ArrowUp" || e.key === "ArrowDown") player.dy = 0;
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") player.dx = 0;
+}
 
-    // 敵人追蹤玩家
-    enemies.forEach(enemy => {
-      moveEnemyTowardsPlayer(enemy);
-    });
+// 開始遊戲
+function startGame() {
+  gameRunning = true;
+  startButton.style.display = "none"; // 隱藏開始按鈕
+  video.play(); // 播放影片
+  video.currentTime = 0; // 重設影片
+  enemies = []; // 清空敵人
+  createEnemies(5); // 重新生成敵人
+  createPlayer(); // 重新生成玩家
+  gameInterval = setInterval(updateGame, 1000 / 60); // 開始遊戲循環
+}
 
-    // 動畫循環
-    requestAnimationFrame(gameLoop);
-  }
+// 停止遊戲
+function stopGame() {
+  clearInterval(gameInterval);
+  video.pause(); // 停止影片
+  video.currentTime = 0; // 重設影片
+  startButton.style.display = "inline-block"; // 顯示開始按鈕
+  gameRunning = false;
+}
 
-  function drawBackground() {
-    // 繪製背景，讓背景不會超過視窗邊界
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-  }
+// 重新開始遊戲
+function restartGame() {
+  stopGame();
+  startGame();
+}
 
-  function drawPlayer() {
-    ctx.drawImage(player.image, player.x, player.y);
-  }
+// 影片結束後自動重新開始
+video.addEventListener("ended", restartGame);
 
-  function drawEnemies() {
-    enemies.forEach(enemy => {
-      ctx.drawImage(enemy.image, enemy.x, enemy.y);
-    });
-  }
-
-  // 敵人追蹤玩家邏輯
-  function moveEnemyTowardsPlayer(enemy) {
-    const dx = player.x - enemy.x;
-    const dy = player.y - enemy.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < 50) {
-      return;  // 當敵人接近玩家時停止移動
-    }
-    const angle = Math.atan2(dy, dx);
-    enemy.x += Math.cos(angle) * enemy.speed;
-    enemy.y += Math.sin(angle) * enemy.speed;
-  }
-
-  // 處理滑鼠與鍵盤事件
-  window.addEventListener('keydown', handleKeyboardMovement);
-
-  function handleKeyboardMovement(event) {
-    switch (event.key) {
-      case 'ArrowUp':
-        player.y -= player.speed;
-        break;
-      case 'ArrowDown':
-        player.y += player.speed;
-        break;
-      case 'ArrowLeft':
-        player.x -= player.speed;
-        break;
-      case 'ArrowRight':
-        player.x += player.speed;
-        break;
-    }
-  }
-
-  // 停止遊戲與重啟
-  function stopGame() {
-    gameStarted = false;
-    startButton.style.display = 'block'; // 顯示開始按鈕
-    gameVideo.pause();  // 停止影片
-    gameVideo.currentTime = 0;  // 重設影片播放時間
-  }
-
-  // 當影片結束時，重新啟動遊戲
-  gameVideo.addEventListener('ended', () => {
+// 按鈕事件
+startButton.addEventListener("click", () => {
+  if (gameRunning) {
     stopGame();
-    initGame();  // 遊戲重新啟動
-  });
+  } else {
+    startGame();
+  }
 });
+
+// 監聽鍵盤事件
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+// 初始化遊戲
+function init() {
+  createPlayer();
+  createEnemies(5);
+  startButton.style.display = "inline-block"; // 顯示開始遊戲按鈕
+  video.style.display = "none"; // 隱藏影片
+}
+
+init();
