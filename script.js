@@ -107,7 +107,7 @@ function getRandomPosition() {
   return newPos;
 }
 
-// 移動敵人，確保不會重疊
+// 移動敵人，根據玩家位置平滑移動
 function moveEnemy(enemy) {
   // 目標位置是玩家的位置
   const targetX = playerPos.x;
