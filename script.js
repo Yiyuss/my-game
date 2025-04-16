@@ -200,5 +200,11 @@ function moveEnemy(enemy) {
 
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
+  } else {
+    // 如果敵人已經接近玩家，停止移動
+    enemy.pos.x = playerPos.x;
+    enemy.pos.y = playerPos.y;
+    enemy.element.style.left = enemy.pos.x + 'px';
+    enemy.element.style.top = enemy.pos.y + 'px';
   }
 }
