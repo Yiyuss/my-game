@@ -108,7 +108,6 @@ function getRandomPosition() {
 
 // 移動敵人，朝玩家移動
 function moveEnemy(enemy) {
-  // 目標位置是玩家的位置
   const targetX = playerPos.x;
   const targetY = playerPos.y;
 
@@ -120,7 +119,6 @@ function moveEnemy(enemy) {
 
   // 如果距離大於敵人移動速度，繼續移動
   if (dist > speed) {
-    // 計算每次更新的移動距離
     let moveX = (dx / dist) * speed;
     let moveY = (dy / dist) * speed;
 
@@ -154,7 +152,6 @@ function checkCollision(enemy) {
     enemyRect.top < playerRect.bottom &&
     enemyRect.bottom > playerRect.top
   ) {
-    // 如果碰撞，顯示影片
     showVideo();
   }
 }
@@ -186,31 +183,23 @@ function showVideo() {
 
 // 重置遊戲狀態
 function resetGame() {
-  // 清除定時器
   clearInterval(gameInterval);
-
-  // 重新初始化遊戲狀態
   score = 0;
   time = 0;
   scoreEl.textContent = score;
   timeEl.textContent = time;
 
-  // 重新設定玩家位置
   playerPos.x = 200;
   playerPos.y = 200;
   player.style.left = playerPos.x + 'px';
   player.style.top = playerPos.y + 'px';
 
-  // 清除所有敵人
   enemies.forEach(enemyObj => enemyObj.element.remove());
-  enemies = []; // 清空敵人陣列
+  enemies = [];
 
-  // 重新生成敵人並啟動敵人移動
   spawnEnemy();
-
-  // 重啟遊戲定時器
   gameRunning = true;
-  gameInterval = setInterval(updateGame, 1000 / 60); // 更新遊戲狀態
+  gameInterval = setInterval(updateGame, 1000 / 60);
 }
 
 // 檢查影片是否正在播放
