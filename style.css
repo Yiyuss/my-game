@@ -37,17 +37,21 @@ iframe {
 }
 
 #player {
-  background-image: url('https://i.imgur.com/JFTxfva.png');
+  background-image: url('https://i.imgur.com/JFTxfva.png'); /* 玩家圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
+  width: 50px; /* 設定玩家大小 */
+  height: 50px;
 }
 
 #enemy {
-  background-image: url('https://i.imgur.com/NPnmEtr.png');
+  background-image: url('https://i.imgur.com/NPnmEtr.png'); /* 敵人圖片 */
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
+  width: 50px; /* 設定敵人大小 */
+  height: 50px;
 }
 
 #scoreboard {
