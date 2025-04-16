@@ -12,17 +12,20 @@ document.addEventListener('DOMContentLoaded', function() {
   let playerPos = { x: 200, y: 200 };
   let enemies = [];
   let gameRunning = false;
-
+  let interval;
+  
   // 开始游戏按钮事件
   startBtn.addEventListener('click', function() {
     if (gameRunning) return; // 避免多次启动
     gameRunning = true;
+    startBtn.style.display = 'none'; // 隐藏开始按钮
     resetGame(); // 重置游戏状态
-    spawnEnemy();  // 生成敌人
     score = 0;
     time = 0;
     scoreEl.textContent = `分數: ${score}`;
     timeEl.textContent = `時間: ${time}`;
+    spawnEnemy();  // 生成敌人
+    interval = setInterval(updateGame, 1000 / 60); // 60fps更新游戏状态
   });
 
   // 玩家键盘控制移动
@@ -80,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
       hitSound.play();
       showGameOverVideo();  // 播放结束视频
       gameRunning = false;
+      clearInterval(interval); // 停止游戏更新
     }
   }
 
@@ -100,5 +104,13 @@ document.addEventListener('DOMContentLoaded', function() {
     timeEl.textContent = `時間: ${time}`;
     videoOverlay.style.display = 'none';
     endVideo.src = '';  // 清空视频
+  }
+
+  // 游戏主循环
+  function updateGame() {
+    time++;
+    timeEl.textContent = `時間: ${time}`;
+    if (time % 5 === 0) spawnEnemy(); // 每5秒生成一个敌人
+    enemies.forEach(moveEnemy);
   }
 });
