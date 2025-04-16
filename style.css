@@ -16,7 +16,7 @@ body {
   background-image: url('https://i.imgur.com/gIhNJmY.jpeg'); /* 背景图片 */
   background-size: cover;
   background-position: center;
-  overflow: hidden; /* 防止溢出 */
+  overflow: hidden;
 }
 
 #player {
