@@ -71,12 +71,18 @@ iframe {
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
+  left: 200px; /* 初始化位置 */
+  top: 200px;  /* 初始化位置 */
+  width: 50px;
+  height: 50px;
 }
 
 /* 敵人設定 */
-#enemy {
+.enemy {
   background-image: url('https://i.imgur.com/NPnmEtr.png');
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
+  width: 50px;
+  height: 50px;
 }
