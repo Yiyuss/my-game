@@ -36,16 +36,13 @@ function resetGame() {
 
 function movePlayer() {
   const step = 5;
-  const rect = player.getBoundingClientRect();
-  const containerRect = enemiesContainer.getBoundingClientRect();
-
   let top = player.offsetTop;
   let left = player.offsetLeft;
 
   if (keys["ArrowUp"] && top > 0) top -= step;
-  if (keys["ArrowDown"] && top + player.offsetHeight < gameHeight) top += step;
+  if (keys["ArrowDown"] && top + 50 < gameHeight) top += step;
   if (keys["ArrowLeft"] && left > 0) left -= step;
-  if (keys["ArrowRight"] && left + player.offsetWidth < gameWidth) left += step;
+  if (keys["ArrowRight"] && left + 50 < gameWidth) left += step;
 
   player.style.top = top + "px";
   player.style.left = left + "px";
@@ -55,8 +52,7 @@ function spawnEnemy() {
   const enemy = document.createElement("div");
   enemy.classList.add("enemy");
 
-  let x, y, tries = 0;
-  let overlap = true;
+  let x, y, tries = 0, overlap = true;
 
   while (overlap && tries < 100) {
     x = Math.random() * (gameWidth - 50);
@@ -75,33 +71,31 @@ function spawnEnemy() {
 
   enemies.push({
     el: enemy,
-    x,
-    y,
+    x, y,
     dx: (Math.random() - 0.5) * speed,
     dy: (Math.random() - 0.5) * speed
   });
 }
 
 function moveEnemies() {
-  enemies.forEach(enemy => {
+  enemies.forEach((enemy, i) => {
     enemy.x += enemy.dx;
     enemy.y += enemy.dy;
 
     if (enemy.x < 0 || enemy.x > gameWidth - 50) enemy.dx *= -1;
     if (enemy.y < 0 || enemy.y > gameHeight - 50) enemy.dy *= -1;
 
-    enemies.forEach(other => {
-      if (enemy === other) return;
+    for (let j = 0; j < enemies.length; j++) {
+      if (i === j) continue;
+      const other = enemies[j];
       const dx = enemy.x - other.x;
       const dy = enemy.y - other.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < 50) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 50) {
         enemy.dx *= -1;
         enemy.dy *= -1;
-        other.dx *= -1;
-        other.dy *= -1;
       }
-    });
+    }
 
     enemy.el.style.left = enemy.x + "px";
     enemy.el.style.top = enemy.y + "px";
@@ -111,12 +105,12 @@ function moveEnemies() {
 function checkCollision() {
   const playerRect = player.getBoundingClientRect();
   for (let enemy of enemies) {
-    const enemyRect = enemy.el.getBoundingClientRect();
+    const rect = enemy.el.getBoundingClientRect();
     if (
-      playerRect.left < enemyRect.right &&
-      playerRect.right > enemyRect.left &&
-      playerRect.top < enemyRect.bottom &&
-      playerRect.bottom > enemyRect.top
+      playerRect.left < rect.right &&
+      playerRect.right > rect.left &&
+      playerRect.top < rect.bottom &&
+      playerRect.bottom > rect.top
     ) {
       endGame();
       return;
@@ -157,10 +151,10 @@ function endGame() {
   cutscene.play();
 
   cutscene.onended = () => {
-    startGame(); // 自動重新開始
+    startGame();
   };
 }
 
 startBtn.addEventListener("click", () => {
-  if (!isGameRunning) startGame();
+  startGame();
 });
