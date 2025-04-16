@@ -56,7 +56,9 @@ function spawnEnemy() {
   const enemyObj = {
     pos: getRandomPosition(),  // 隨機生成敵人位置
     speed: 2,  // 敵人初速度設定為2
-    element: document.createElement('div')
+    element: document.createElement('div'),
+    dx: 0, // 敵人移動的X方向速度
+    dy: 0  // 敵人移動的Y方向速度
   };
 
   enemyObj.element.classList.add('enemy');  // 為敵人元素添加CSS類
@@ -186,13 +188,16 @@ function moveEnemy(enemy) {
   let dist = Math.sqrt(dx * dx + dy * dy);
   let speed = enemy.speed;
 
-  // 只要距離大於移動速度，就進行移動
+  // 正常移動
   if (dist > speed) {
-    // 正常移動
-    enemy.pos.x += (dx / dist) * speed;
-    enemy.pos.y += (dy / dist) * speed;
+    // 更新敵人的移動速度
+    enemy.dx = (dx / dist) * speed;
+    enemy.dy = (dy / dist) * speed;
 
     // 更新敵人位置
+    enemy.pos.x += enemy.dx;
+    enemy.pos.y += enemy.dy;
+
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
   }
