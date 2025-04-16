@@ -11,6 +11,7 @@ body {
   margin: 0 auto;
   background-image: url("https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg");
   background-size: cover;
+  background-position: center;
   overflow: hidden;
 }
 
@@ -32,9 +33,9 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  display: none;
   z-index: 3;
   object-fit: cover;
+  display: none;
 }
 
 #startButton {
@@ -45,4 +46,9 @@ body {
   z-index: 4;
   padding: 20px 40px;
   font-size: 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
 }
