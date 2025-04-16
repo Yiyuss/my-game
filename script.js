@@ -130,7 +130,7 @@ function moveEnemy(enemy) {
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
   } else {
-    // 如果敵人接近玩家，停下來
+    // 停止移動，達到目標
     enemy.pos.x = targetX;
     enemy.pos.y = targetY;
     enemy.element.style.left = enemy.pos.x + 'px';
@@ -156,18 +156,6 @@ function checkCollision(enemy) {
   }
 }
 
-// 更新遊戲狀態
-function updateGame() {
-  if (!gameRunning || isVideoPlaying()) return; // 如果影片正在播放，不進行更新
-
-  time++;
-  timeEl.textContent = time;
-  score++;
-  scoreEl.textContent = score;
-
-  movePlayer();  // 讓玩家移動
-}
-
 // 顯示影片
 function showVideo() {
   endVideo.src = 'https://www.youtube.com/embed/Qybud8_paik?autoplay=1';
@@ -181,13 +169,25 @@ function showVideo() {
   }, 9000);
 }
 
+// 更新遊戲狀態
+function updateGame() {
+  if (!gameRunning || isVideoPlaying()) return; // 如果影片正在播放，不進行更新
+
+  time++;
+  timeEl.textContent = '時間: ' + time;
+  score++;
+  scoreEl.textContent = '分數: ' + score;
+
+  movePlayer();  // 讓玩家移動
+}
+
 // 重置遊戲狀態
 function resetGame() {
   clearInterval(gameInterval);
   score = 0;
   time = 0;
-  scoreEl.textContent = score;
-  timeEl.textContent = time;
+  scoreEl.textContent = '分數: ' + score;
+  timeEl.textContent = '時間: ' + time;
 
   playerPos.x = 200;
   playerPos.y = 200;
