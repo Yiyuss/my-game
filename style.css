@@ -10,8 +10,8 @@ body {
   position: relative;
   width: 1024px;
   height: 576px;
-  margin: 20px auto; /* 垂直居中 */
-  background-image: url('https://i.postimg.cc/k5VX4QCH/bg.jpg'); /* 替代 imgur 圖片 */
+  margin: 0 auto;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/3f/Space_background_black.png'); /* 替代背景圖 */
   background-size: cover;
   background-position: center;
   border: 3px solid white;
@@ -34,31 +34,25 @@ body {
 iframe {
   width: 100%;
   height: 100%;
+  border: none;
 }
 
 #player {
+  position: absolute;
   width: 50px;
   height: 50px;
-  background-color: blue;
-  background-image: url('https://i.postimg.cc/Y9Kmy6cv/player.png'); /* 新玩家圖片 */
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Pixel_character.png/50px-Pixel_character.png'); /* 替代玩家圖片 */
   background-size: cover;
   background-repeat: no-repeat;
-  position: absolute;
 }
 
 #enemy {
+  position: absolute;
   width: 50px;
   height: 50px;
-  background-color: red;
-  background-image: url('https://i.postimg.cc/Nf4vLmn7/enemy.png'); /* 新敵人圖片 */
+  background-image: url('https://i.imgur.com/NPnmEtr.png');
   background-size: cover;
   background-repeat: no-repeat;
-  position: absolute;
-}
-
-#scoreboard {
-  font-size: 20px;
-  margin: 10px;
 }
 
 #start-btn {
@@ -66,4 +60,18 @@ iframe {
   padding: 10px 20px;
   margin: 10px;
   cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+#score-board,
+#time-board {
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 5px;
+  z-index: 10;
 }
