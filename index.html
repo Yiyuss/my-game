@@ -1,26 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>遊戲</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>簡易小遊戲</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="scoreboard">
+    分數：<span id="score">0</span> ｜ 時間：<span id="time">0</span>
+  </div>
+  <button id="start-btn">開始遊戲</button>
   <div id="game-container">
     <div id="player"></div>
-    <div id="scoreboard">
-      <span id="score">0</span> | <span id="time">0</span>
+    <div id="video-overlay">
+      <iframe id="end-video" src="" frameborder="0" allow="autoplay"></iframe>
     </div>
-    <div id="start-btn">開始遊戲</div>
   </div>
-
-  <div id="video-overlay">
-    <iframe id="end-video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-  </div>
-
-  <audio id="hit-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
-
+  <audio id="hit-sound" src="https://www.soundjay.com/mechanical/sounds/metal-clunk-1.mp3" preload="auto"></audio>
   <script src="script.js"></script>
 </body>
 </html>
