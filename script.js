@@ -94,6 +94,7 @@ function gameLoop() {
 
 function startGame() {
   gameRunning = true;
+  player.style.display = "block";
   playerX = 100;
   playerY = 100;
   player.style.left = playerX + "px";
