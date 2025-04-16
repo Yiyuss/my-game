@@ -117,31 +117,16 @@ function moveEnemy(enemy) {
   let dist = Math.sqrt(dx * dx + dy * dy);
   let speed = enemy.speed;
 
-  // 如果距離大於敵人移動速度，繼續移動
+  // 如果距離大於敵人移動的步長，則移動
   if (dist > speed) {
-    let moveX = (dx / dist) * speed;
-    let moveY = (dy / dist) * speed;
-
-    // 更新敵人位置
-    enemy.pos.x += moveX;
-    enemy.pos.y += moveY;
-
-    // 更新敵人元素的樣式
-    enemy.element.style.left = enemy.pos.x + 'px';
-    enemy.element.style.top = enemy.pos.y + 'px';
-  } else {
-    // 停止移動，達到目標
-    enemy.pos.x = targetX;
-    enemy.pos.y = targetY;
+    enemy.pos.x += (dx / dist) * speed;
+    enemy.pos.y += (dy / dist) * speed;
     enemy.element.style.left = enemy.pos.x + 'px';
     enemy.element.style.top = enemy.pos.y + 'px';
   }
-
-  // 檢查是否與玩家碰撞
-  checkCollision(enemy);
 }
 
-// 檢查敵人與玩家的碰撞
+// 檢查敵人是否與玩家碰撞
 function checkCollision(enemy) {
   const enemyRect = enemy.element.getBoundingClientRect();
   const playerRect = player.getBoundingClientRect();
@@ -179,6 +164,14 @@ function updateGame() {
   scoreEl.textContent = '分數: ' + score;
 
   movePlayer();  // 讓玩家移動
+
+  // 檢查敵人與玩家碰撞
+  enemies.forEach(enemy => checkCollision(enemy));
+}
+
+// 檢查影片是否正在播放
+function isVideoPlaying() {
+  return videoOverlay.style.display === 'flex';
 }
 
 // 重置遊戲狀態
@@ -200,9 +193,4 @@ function resetGame() {
   spawnEnemy();
   gameRunning = true;
   gameInterval = setInterval(updateGame, 1000 / 60);
-}
-
-// 檢查影片是否正在播放
-function isVideoPlaying() {
-  return videoOverlay.style.display === 'flex';
 }
