@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let enemies = [];
   let gameRunning = false;
   let interval;
-  
+
   // 开始游戏按钮事件
   startBtn.addEventListener('click', function() {
     if (gameRunning) return; // 避免多次启动
