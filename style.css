@@ -1,41 +1,41 @@
+
 body {
   margin: 0;
-  padding: 0;
-  background-color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   overflow: hidden;
+  background: url('https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
 
-#background {
+#game-canvas {
+  display: block;
+  margin: 0 auto;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 確保背景圖片覆蓋整個視窗 */
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
 }
 
-#gameCanvas {
+#start-button {
   position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-#startButton {
-  position: absolute;
-  bottom: 10px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 20px;
-  background-color: #28a745;
+  transform: translate(-50%, -50%);
+  padding: 20px 40px;
+  font-size: 24px;
+  background-color: #28a;
   color: white;
-  font-size: 18px;
   border: none;
+  border-radius: 12px;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 10;
 }
 
-#startButton:hover {
-  background-color: #218838;
+#game-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 5;
+  display: none;
 }
