@@ -1,9 +1,11 @@
+/* 重置樣式 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* 基本背景設置 */
 body {
   font-family: Arial, sans-serif;
   background-color: #000;
@@ -15,8 +17,12 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-color: #222;
+  background-color: #222;  /* 遊戲背景顏色 */
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 #player {
