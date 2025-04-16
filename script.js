@@ -13,21 +13,25 @@ document.addEventListener('DOMContentLoaded', function() {
   let enemies = [];
   let gameRunning = false;
 
-  // 开始游戏
-  startBtn.addEventListener('click', () => {
-    resetGame(); // 重置游戏状态
+  // 开始游戏按钮事件
+  startBtn.addEventListener('click', function() {
+    if (gameRunning) return; // 避免多次启动
     gameRunning = true;
+    resetGame(); // 重置游戏状态
     spawnEnemy();  // 生成敌人
+    score = 0;
+    time = 0;
+    scoreEl.textContent = `分數: ${score}`;
+    timeEl.textContent = `時間: ${time}`;
   });
 
-  // 移动玩家
-  document.addEventListener('keydown', (e) => {
+  // 玩家键盘控制移动
+  document.addEventListener('keydown', function(e) {
     if (!gameRunning) return;
     if (e.key === 'ArrowUp') playerPos.y -= 5;
     if (e.key === 'ArrowDown') playerPos.y += 5;
     if (e.key === 'ArrowLeft') playerPos.x -= 5;
     if (e.key === 'ArrowRight') playerPos.x += 5;
-
     player.style.left = playerPos.x + 'px';
     player.style.top = playerPos.y + 'px';
   });
@@ -43,12 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
     enemy.element.style.left = enemy.x + 'px';
     enemy.element.style.top = enemy.y + 'px';
     document.getElementById('game-container').appendChild(enemy.element);
-
     enemies.push(enemy);
     moveEnemy(enemy);
   }
 
-  // 移动敌人
+  // 敌人移动
   function moveEnemy(enemy) {
     const speed = 1;
     const dx = playerPos.x - enemy.x;
@@ -58,10 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (dist > 5) {
       const moveX = (dx / dist) * speed;
       const moveY = (dy / dist) * speed;
-
       enemy.x += moveX;
       enemy.y += moveY;
-
       enemy.element.style.left = enemy.x + 'px';
       enemy.element.style.top = enemy.y + 'px';
     }
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     checkCollision(enemy);
   }
 
-  // 检查碰撞
+  // 碰撞检测
   function checkCollision(enemy) {
     const dx = playerPos.x - enemy.x;
     const dy = playerPos.y - enemy.y;
@@ -82,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // 显示游戏结束视频
+  // 播放游戏结束视频
   function showGameOverVideo() {
     videoOverlay.style.display = 'flex';
     endVideo.src = 'https://www.youtube.com/embed/your_video_id?autoplay=1';
@@ -91,14 +92,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // 重置游戏
   function resetGame() {
     playerPos = { x: 200, y: 200 };
-    score = 0;
-    time = 0;
     enemies = [];
     gameRunning = false;
-
-    scoreEl.textContent = `分数: ${score}`;
-    timeEl.textContent = `时间: ${time}`;
+    score = 0;
+    time = 0;
+    scoreEl.textContent = `分數: ${score}`;
+    timeEl.textContent = `時間: ${time}`;
     videoOverlay.style.display = 'none';
-    endVideo.src = '';
+    endVideo.src = '';  // 清空视频
   }
 });
