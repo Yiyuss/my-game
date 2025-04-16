@@ -1,11 +1,11 @@
-/* 重置樣式 */
+/* 重置样式 */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 基本背景設置 */
+/* 基本背景设定 */
 body {
   font-family: Arial, sans-serif;
   background-color: #000;
@@ -17,7 +17,7 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-image: url('https://i.imgur.com/gIhNJmY.jpeg'); /* 設置背景圖片 */
+  background-image: url('https://i.imgur.com/gIhNJmY.jpeg'); /* 背景图片 */
   background-size: cover;
   background-position: center;
   overflow: hidden;
