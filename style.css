@@ -6,12 +6,32 @@ body {
   text-align: center;
 }
 
+#start-btn {
+  font-size: 18px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 10000; /* 確保在最上層 */
+  background-color: #fff;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+#scoreboard {
+  font-size: 20px;
+  margin: 10px;
+  z-index: 10000;
+  position: relative;
+}
+
 #game-container {
   position: relative;
   width: 1024px;
   height: 576px;
-  margin: 0 auto;
-  background-image: url('170117-2330-1-VqLzt.jpg'); /* 背景圖片 */
+  margin: 20px auto;
+  background-image: url('170117-2330-1-VqLzt.jpg');
   background-size: cover;
   background-position: center;
   border: 3px solid white;
@@ -43,6 +63,7 @@ body {
   background-image: url('01.png');
   background-size: cover;
   background-repeat: no-repeat;
+  z-index: 10;
 }
 
 #enemy {
@@ -52,16 +73,5 @@ body {
   background-image: url('02.png');
   background-size: cover;
   background-repeat: no-repeat;
-}
-
-#scoreboard {
-  font-size: 20px;
-  margin: 10px;
-}
-
-#start-btn {
-  font-size: 18px;
-  padding: 10px 20px;
-  margin: 10px;
-  cursor: pointer;
+  z-index: 10;
 }
