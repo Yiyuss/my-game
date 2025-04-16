@@ -41,7 +41,6 @@ iframe {
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  z-index: 1; /* 確保玩家圖片顯示在遊戲容器內 */
 }
 
 #enemy {
@@ -49,7 +48,6 @@ iframe {
   background-size: cover;
   background-repeat: no-repeat;
   position: absolute;
-  z-index: 1; /* 確保敵人圖片顯示在遊戲容器內 */
 }
 
 #scoreboard {
@@ -62,13 +60,4 @@ iframe {
   padding: 10px 20px;
   margin: 10px;
   cursor: pointer;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  z-index: 10000; /* 設置為最高層級，確保按鈕不會被遮擋 */
-}
-
-#start-btn:hover {
-  background-color: #0056b3;
 }
