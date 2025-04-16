@@ -1,81 +1,99 @@
-const player = document.getElementById("player");
-const enemy = document.getElementById("enemy");
-const gameArea = document.getElementById("gameArea");
-const startButton = document.getElementById("startButton");
-const timerElement = document.getElementById("timer");
-const cutscene = document.getElementById("cutscene");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
 
-let playerX = 100;
-let playerY = 100;
-let enemyX = 600;
-let enemyY = 300;
-let gameRunning = false;
-let timer = 0;
-let interval;
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-image: url("https://raw.githubusercontent.com/Yiyuss/my-game/main/170117-2330-1-VqLzt.jpg");
+      background-size: cover;
+      background-position: center;
+    }
 
-function startGame() {
-  gameRunning = true;
-  timer = 0;
-  playerX = 100;
-  playerY = 100;
-  enemyX = 600;
-  enemyY = 300;
-  cutscene.classList.add("hidden");
-  player.style.display = "block";
-  enemy.style.display = "block";
-  startButton.style.display = "none";
-  interval = setInterval(() => {
-    timer++;
-    timerElement.textContent = `時間：${timer}秒`;
-  }, 1000);
-  requestAnimationFrame(updateGame);
-}
+    #player {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-image: url("https://raw.githubusercontent.com/Yiyuss/my-game/main/01.png");
+      background-size: cover;
+    }
 
-function updateGame() {
-  if (!gameRunning) return;
+    .enemy {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-image: url("https://raw.githubusercontent.com/Yiyuss/my-game/main/02.png");
+      background-size: cover;
+    }
 
-  player.style.left = playerX + "px";
-  player.style.top = playerY + "px";
+    #start-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
 
-  enemyX -= 2;
-  if (enemyX < -80) enemyX = 800;
-  enemy.style.left = enemyX + "px";
-  enemy.style.top = enemyY + "px";
+    #score, #time {
+      position: absolute;
+      top: 20px;
+      color: white;
+      font-size: 24px;
+    }
 
-  if (checkCollision(player, enemy)) {
-    endGame();
-    return;
-  }
+    #time {
+      left: 150px;
+    }
 
-  requestAnimationFrame(updateGame);
-}
+    #score {
+      left: 80px;
+    }
 
-function endGame() {
-  gameRunning = false;
-  clearInterval(interval);
-  cutscene.classList.remove("hidden");
-  cutscene.currentTime = 0;
-  cutscene.play();
-}
+    #video-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
 
-function checkCollision(a, b) {
-  const aRect = a.getBoundingClientRect();
-  const bRect = b.getBoundingClientRect();
-  return !(
-    aRect.right < bRect.left ||
-    aRect.left > bRect.right ||
-    aRect.bottom < bRect.top ||
-    aRect.top > bRect.bottom
-  );
-}
+    #end-video {
+      width: 80%;
+      height: 80%;
+    }
+  </style>
+</head>
+<body>
 
-document.addEventListener("keydown", (e) => {
-  if (!gameRunning) return;
-  const step = 10;
-  if (e.key === "ArrowUp") playerY -= step;
-  if (e.key === "ArrowDown") playerY += step;
-  if (e.key === "ArrowLeft") playerX -= step;
-  if (e.key === "ArrowRight") playerX += step;
-});
+  <div id="game-container">
+    <div id="player"></div>
+    <button id="start-btn">Start Game</button>
+    <div id="score">0</div>
+    <div id="time">0</div>
+    <div id="video-overlay">
+      <iframe id="end-video" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
 
-startButton.addEventListener("click", startGame);
+  <audio id="hit-sound" src="https://raw.githubusercontent.com/Yiyuss/my-game/main/hit-sound.mp3"></audio>
+
+  <script src="https://raw.githubusercontent.com/Yiyuss/my-game/main/script.js"></script>
+</body>
+</html>
