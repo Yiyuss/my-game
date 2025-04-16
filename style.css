@@ -17,7 +17,8 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-color: #222;  /* 遊戲背景顏色 */
+  background-image: url('https://i.imgur.com/gIhNJmY.jpeg'); /* 設置背景圖片 */
+  background-size: cover;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -29,11 +30,12 @@ body {
   position: absolute;
   width: 50px;
   height: 50px;
-  background-image: url('https://i.imgur.com/NPnmEtr.png');
+  background-image: url('https://i.imgur.com/JFTxfva.png');
   background-size: cover;
   background-repeat: no-repeat;
   left: 200px;
   top: 200px;
+  z-index: 2;
 }
 
 .enemy {
