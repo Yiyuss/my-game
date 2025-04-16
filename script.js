@@ -6,19 +6,16 @@ const gameContainer = document.getElementById("gameContainer");
 let enemies = [];
 let keys = {};
 let gameRunning = false;
-
 let playerX = 100, playerY = 100;
 const speed = 5;
 const enemySpeed = 1.5;
 
-document.addEventListener("DOMContentLoaded", () => {
-  startButton.addEventListener("click", () => {
-    startButton.style.display = "none";
-    startGame();
-  });
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
 
-  document.addEventListener("keydown", e => keys[e.key] = true);
-  document.addEventListener("keyup", e => keys[e.key] = false);
+startButton.addEventListener("click", () => {
+  startButton.style.display = "none";
+  startGame();
 });
 
 function movePlayer() {
@@ -52,7 +49,6 @@ function moveEnemies() {
     const dist = Math.hypot(dx, dy);
 
     let avoidX = 0, avoidY = 0;
-
     enemies.forEach(other => {
       if (enemy === other) return;
       const ox = enemy.x - other.x;
@@ -72,15 +68,13 @@ function moveEnemies() {
 
     enemy.x += vx;
     enemy.y += vy;
-
     enemy.x = Math.max(0, Math.min(enemy.x, 750));
     enemy.y = Math.max(0, Math.min(enemy.y, 550));
-
     enemy.style.left = enemy.x + "px";
     enemy.style.top = enemy.y + "px";
 
     if (Math.abs(playerX - enemy.x) < 40 && Math.abs(playerY - enemy.y) < 40) {
-      playCutscene();
+      if (gameRunning) playCutscene();
     }
   });
 }
@@ -94,7 +88,6 @@ function gameLoop() {
 
 function startGame() {
   gameRunning = true;
-  player.style.display = "block";
   playerX = 100;
   playerY = 100;
   player.style.left = playerX + "px";
